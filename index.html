@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winter of Velmoor</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <div id="viewWrap">
+      <canvas id="view"></canvas>
+      <div id="fx" class="fx"></div>
+      <div id="overlay"></div>
+      <div id="hud"></div>
+      <canvas id="minimap" width="150" height="150"></canvas>
+      <div class="vignette"></div>
+    </div>
+    <div id="panel">
+      <div id="log"></div>
+      <div id="menu"></div>
+    </div>
+  </div>
+  <div id="party"></div>
+  <div id="bar">
+    <div id="pad">
+      <button data-k="a" title="Turn left (A)">⟲</button>
+      <button data-k="w" title="Forward (W)">▲</button>
+      <button data-k="d" title="Turn right (D)">⟳</button>
+      <button data-k="s" title="Turn around (S)">▼</button>
+    </div>
+    <div class="keys"><b>WASD/Arrows</b> move &middot; <b>1-6</b> characters &middot; <b>C</b> cast &middot; <b>B</b> sing &middot; <b>U</b> use &middot; <b>M</b> map &middot; <b>Esc</b> menu &middot; <b>H</b> help</div>
+    <div class="btns"><button id="btnMap" title="Map (M)">🗺</button><button id="btnMenu" title="Menu (Esc)">☰</button><button id="btnMute" title="Mute">🔊</button></div>
+  </div>
+</div>
+<div id="transition"></div>
+<div id="title"></div>
+<div id="modal"></div>
+
+<script src="js/util.js"></script>
+<script src="js/data.js"></script>
+<script src="js/items.js"></script>
+<script src="js/spells.js"></script>
+<script src="js/monsters.js"></script>
+<script src="assets/manifest.js"></script>
+<script src="js/art.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/mapgen.js"></script>
+<script src="js/maps.js"></script>
+<script src="js/state.js"></script>
+<script src="js/textures.js"></script>
+<script src="js/render.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/magic.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/town.js"></script>
+<script src="js/explore.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
