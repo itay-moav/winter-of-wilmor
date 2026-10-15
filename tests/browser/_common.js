@@ -15,6 +15,8 @@ async function open() {
   // New game -> skip intro -> hire the ready-made party -> leave the guild.
   T.newGame = async () => {
     await T.key('n', 700); await T.key('s', 900); await T.key('h', 450); await T.key('l', 700);
+    // no random encounters: a surprise fight would derail scripted key sequences (tests start fights explicitly)
+    await T.eval('for (const id in BT.MAPS) BT.MAPS[id].encounter = 0; 1');
   };
   return T;
 }

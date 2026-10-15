@@ -17,6 +17,7 @@ Run everything from the project root:
 | `node tests/browser/side-quest.js` | house → attic → secret wall → riddle → portal → Sun Vault; fountain ceremony with all relics | 30 s |
 | `node tests/browser/gameover-ending.js` | game over → new game still works (guard lock edge case); full ending → thawed city | 25 s |
 | `node tests/browser/screenshots.js` | not a test - renders ~20 key screens to `$SHOTS` (default `/tmp/velmoor-shots`) for visual review with the Read tool | 60 s |
+| `node tests/render-music.js [track ...]` | not a test - renders music tracks to `assets/audio-previews/<track>.wav` (gitignored) so the user can listen outside the game, e.g. `afplay -t 25 assets/audio-previews/combat_city.wav` | ~1 min |
 | `node tests/sim.js [N]` | combat balance: N fights per scenario at the expected party level per area; prints win rate, HP left, deaths, rounds | 1-3 min |
 | `node tests/playthrough.js [runs] [-v]` | a bot plays the whole main story (explores, fights, rests in town, solves riddles, uses gates, kills all bosses, reaches the ending) | 1-3 min/run |
 
@@ -33,6 +34,7 @@ All browser tests print `ok`/`FAIL` lines, fail on any JS exception or console e
 - **A stub that returns a promise that never resolves makes Node exit silently with code 0 and no output.** If a headless test prints nothing, look for a missing or unresolved stub (for example a `UI.*` function the code now awaits).
 - `tests/cdp.js` is a tiny Chrome DevTools Protocol driver (no npm deps; Node's built-in `WebSocket`). It drives the installed Google Chrome at `/Applications/Google Chrome.app` headless. The API is `eval(expr)`, `key(k, waitMs)`, `type(text)`, `click(x, y)`, `shot(path)`, `sleep(ms)`, `logs`, `close()`.
 - **Determinism:** combat randomises how far away monster groups start, so a scripted key sequence can find "Attack" disabled. Pin it by stubbing `BT.U.rand = () => 0` around `CB.fight(...)` (see `smoke.js`).
+- **Random encounters are disabled** by `T.newGame()` (`_common.js`), because a surprise fight mid-walk derailed scripted keys about 1 run in 15. Start fights explicitly with `BT.CB.fight(...)`.
 - **Single-option menus are selected by Space**, so don't spam Space through dialogue. Loop until the expected menu text appears.
 - To reach game states quickly, eval directly. For example: `BT.EX.guard(() => BT.EX.changeMap('crypt2'))`, `BT.G.flags.malthor = true`, `BT.ST.giveParty('moonkey')`, or set `BT.G.x/y/d` then `BT.R.snap()`.
 - Long runs: redirect output to a file. Output from commands that move to the background has been lost before.

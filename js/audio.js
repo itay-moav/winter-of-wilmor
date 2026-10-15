@@ -423,7 +423,7 @@
       ws.curve = getDistCurve(); ws.oversample = '2x';
       var hp = filt(c, 'highpass', 85, 0.7), scoop = filt(c, 'peaking', 650, 1.2), pres = filt(c, 'peaking', 2600, 1.5);
       scoop.gain.value = -5; pres.gain.value = 3;
-      var cab = filt(c, 'lowpass', 4600, 0.9), cab2 = filt(c, 'lowpass', 6500, 0.7), lvl = gainN(c, p.level || 0.22);
+      var cab = filt(c, 'lowpass', 4600, 0.9), cab2 = filt(c, 'lowpass', 6500, 0.7), lvl = gainN(c, p.level || 0.27);
       drive.connect(ws); ws.connect(hp); hp.connect(scoop); scoop.connect(pres); pres.connect(cab); cab.connect(cab2); cab2.connect(lvl); lvl.connect(dest);
       list.push(drive, ws, hp, scoop, pres, cab, cab2, lvl);
       return drive;
@@ -710,16 +710,16 @@
     var uChugBar = 'X.xxX.xxX.xxX.xx', uOffs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1];
     var uFill = rep(R16, 7) + '............X.x.', uFill2 = rep(R16, 7) + '.............x.X';
     TRACKS.combat_underground = {
-      bpm: 150, div: 4, bar: 16, rev: 0.3, gain: 1,
+      bpm: 150, div: 4, bar: 16, rev: 0.3, gain: 0.9,
       drone: { root: 'D2', kind: 'gurdy', vol: 0.035, rev: 0.4 },
       chords: 'D5 D5 Eb5 D5 D5 D5 Bb5 C5 D5 D5 Eb5 D5 D5 D5 Bb5 C5 G5 G5 Eb5 Eb5 Bb5 Bb5 A5 A5 G5 Eb5 Bb5 F5 G5 Eb5 A5 A5',
       parts: [
         { t: 'mel', inst: 'gurdy', mel: uMel, tr: -12, v: 0.9, vol: 0.85, rev: 0.6, fx: 'echo', echo: 3, fb: 0.38, wet: 0.45 },
         { t: 'bass', inst: 'chug', fx: 'dist', pat: rep(uChugBar, 16) + rep(R16, 8) + rep(uChugBar, 8), offs: uOffs, oct: 2, dur: 1, v: 0.9, vol: 1, rev: 0.08 },
         { t: 'bass', inst: 'gtr', fx: 'dist', pat: rep(R16, 16) + rep('X.......X.......', 8) + rep(R16, 8), oct: 2, dur: 8, v: 0.9, vol: 0.9, rev: 0.25 },
-        { t: 'bass', inst: 'bass', pat: rep('X.x.X.x.X.x.X.x.', 16) + rep('X.......X.......', 8) + rep('X.x.X.x.X.x.X.x.', 8), offs: uOffs, oct: 1, dur: 1.8, v: 0.75, vol: 0.9, rev: 0.03 },
+        { t: 'bass', inst: 'bass', pat: rep('X.x.X.x.X.x.X.x.', 16) + rep('X.......X.......', 8) + rep('X.x.X.x.X.x.X.x.', 8), offs: uOffs, oct: 1, dur: 1.8, v: 0.75, vol: 0.55, rev: 0.03 },
         { t: 'drum', inst: 'mkick', pat: rep('X.x.X.x.X.xxX.x.', 8) + rep('X.x.X.x.X.x.xxxx', 8) + rep('xXxXxXxXxXxXxXxX', 16), v: 0.8, vol: 0.85, rev: 0.05 },
-        { t: 'drum', inst: 'msnare', pat: rep('....X.......X...', 16) + rep('........X.......', 8) + rep('....X.......X...', 8), v: 0.85, vol: 0.8, rev: 0.3 },
+        { t: 'drum', inst: 'msnare', pat: rep('....X.......X...', 16) + rep('........X.......', 8) + rep('....X.......X...', 8), v: 0.85, vol: 1, rev: 0.3 },
         { t: 'drum', inst: 'hat', pat: rep('x.o.x.o.x.o.x.o.', 16) + rep(R16, 16), v: 0.8, vol: 0.6, rev: 0.1 },
         { t: 'drum', inst: 'ride', pat: rep(R16, 16) + rep('X...x...X...x...', 16), v: 0.8, vol: 0.6, rev: 0.2 },
         { t: 'drum', inst: 'crash', pat: rep('X' + rep('.', 127), 4), v: 0.8, vol: 0.6, rev: 0.3 },
@@ -740,7 +740,7 @@
       cA + 'G5:2 F#5:1 E5:2 D5:1 B4:2 G4:1 B4:2 D5:1 | A4:9 -:3 |' + cB;
     var gal = 'X.xX.xX.xX.x';
     TRACKS.combat_city = {
-      bpm: 140, div: 3, bar: 12, rev: 0.25, gain: 1,
+      bpm: 140, div: 3, bar: 12, rev: 0.25, gain: 0.9,
       drone: { root: 'A2', kind: 'pipe', vol: 0.04, rev: 0.3 },
       chords: 'A5 A5 G5 D5 A5 A5 G5 E5 A5 A5 G5 D5 A5 A5 G5 A5 D5 A5 G5 A5 D5 A5 E5 E5 F#5 D5 A5 E5 F#5 D5 G5 A5',
       parts: [
@@ -748,10 +748,10 @@
         { t: 'mel', inst: 'flute', mel: '-:192 |' + cB, tr: 12, v: 0.5, vol: 0.55, rev: 0.3 },
         { t: 'bass', inst: 'chug', fx: 'dist', pat: rep(gal, 16) + rep('XxxXxxXxxXxx', 8) + rep(gal, 8), oct: 2, dur: 1, v: 0.9, vol: 0.95, rev: 0.08 },
         { t: 'bass', inst: 'gtr', fx: 'dist', pat: rep(R12, 24) + rep('X.....X.....', 8), oct: 2, dur: 6, v: 0.8, vol: 0.7, rev: 0.2 },
-        { t: 'bass', inst: 'bass', pat: rep(gal, 32), oct: 1, dur: 1.5, v: 0.7, vol: 0.85, rev: 0.03 },
+        { t: 'bass', inst: 'bass', pat: rep(gal, 32), oct: 1, dur: 1.5, v: 0.7, vol: 0.55, rev: 0.03 },
         { t: 'chord', inst: 'shout', pat: rep(R12, 8) + rep(R12 + '.........X..', 4) + rep(R12, 8) + rep('X.....X.....', 8), oct: 3, v: 0.7, vol: 0.6, rev: 0.4 },
         { t: 'drum', inst: 'mkick', pat: rep(gal, 15) + 'X.xX.xXxxXxx' + rep('X..X..X..X..', 8) + rep('XxxXxxXxxXxx', 8), v: 0.8, vol: 0.85, rev: 0.05 },
-        { t: 'drum', inst: 'msnare', pat: rep(rep('...X.....X..', 7) + '...X.....XXX', 4), v: 0.8, vol: 0.75, rev: 0.25 },
+        { t: 'drum', inst: 'msnare', pat: rep(rep('...X.....X..', 7) + '...X.....XXX', 4), v: 0.8, vol: 1, rev: 0.25 },
         { t: 'drum', inst: 'tamb', pat: rep('..x..x..x..x', 16) + rep('x.xx.xx.xx.x', 16), v: 0.8, vol: 0.6, rev: 0.15 },
         { t: 'drum', inst: 'frame', pat: rep('X..x..X..x..', 32), v: 0.5, vol: 0.5, rev: 0.15 },
         { t: 'drum', inst: 'crash', pat: rep('X' + rep('.', 95), 4), v: 0.8, vol: 0.6, rev: 0.3 }
@@ -769,30 +769,30 @@
     TRACKS.combat_wild = {
       drone: { root: 'E2', kind: 'pipe', vol: 0.04, rev: 0.4 },
       seq: [
-        { bpm: 132, div: 4, bar: 16, rev: 0.4, gain: 1,
+        { bpm: 132, div: 4, bar: 16, rev: 0.4, gain: 0.9,
           chords: 'E5 D5 A5 E5 E5 D5 G5 A5 E5 D5 A5 E5 G5 D5 A5 A5',
           parts: [
             { t: 'mel', inst: 'pipe', mel: wA, v: 0.9, vol: 0.85, rev: 0.4 },
             { t: 'mel', inst: 'horn', mel: wA, tr: -12, v: 0.8, vol: 0.75, rev: 0.4 },
             { t: 'bass', inst: 'gtr', fx: 'dist', pat: rep('X...............', 16), oct: 2, dur: 16, v: 0.9, vol: 0.9, rev: 0.3 },
             { t: 'bass', inst: 'chug', fx: 'dist', pat: rep(R16, 8) + rep('x.x.x.x.x.x.x.x.', 8), oct: 2, dur: 1, v: 0.7, vol: 0.7, rev: 0.1 },
-            { t: 'bass', inst: 'bass', pat: rep('X.......X.......', 8) + rep('X.x.X.x.X.x.X.x.', 8), oct: 1, dur: 7, v: 0.7, vol: 0.85, rev: 0.05 },
+            { t: 'bass', inst: 'bass', pat: rep('X.......X.......', 8) + rep('X.x.X.x.X.x.X.x.', 8), oct: 1, dur: 7, v: 0.7, vol: 0.55, rev: 0.05 },
             { t: 'drum', inst: 'wartom', f: 70, pat: rep('X..x..X.X.......', 16), v: 0.9, vol: 0.8, rev: 0.4 },
             { t: 'drum', inst: 'wartom', f: 120, pat: rep('..........X.x.x.', 16), v: 0.7, vol: 0.7, rev: 0.4 },
             { t: 'drum', inst: 'mkick', pat: rep('X.......X.......', 8) + rep('X.......X.x.....', 8), v: 0.8, vol: 0.85, rev: 0.1 },
-            { t: 'drum', inst: 'msnare', pat: rep('........X.......', 8) + rep('....X.......X...', 7) + '....X.......XXXX', v: 0.85, vol: 0.8, rev: 0.4 },
+            { t: 'drum', inst: 'msnare', pat: rep('........X.......', 8) + rep('....X.......X...', 7) + '....X.......XXXX', v: 0.85, vol: 1, rev: 0.4 },
             { t: 'drum', inst: 'crash', pat: rep('X' + rep('.', 63), 4), v: 0.8, vol: 0.6, rev: 0.4 }
           ] },
-        { bpm: 160, div: 4, bar: 16, rev: 0.3, gain: 1,
+        { bpm: 160, div: 4, bar: 16, rev: 0.3, gain: 0.9,
           chords: 'G5 D5 A5 E5 G5 D5 A5 A5 E5 D5 A5 E5 G5 A5 B5 E5',
           parts: [
             { t: 'mel', inst: 'pipe', mel: wB, v: 0.9, vol: 0.85, rev: 0.35 },
             { t: 'mel', inst: 'horn', mel: wB, tr: -12, v: 0.8, vol: 0.7, rev: 0.35 },
             { t: 'bass', inst: 'chug', fx: 'dist', pat: rep('X.xxX.xxX.xxX.xx', 16), oct: 2, dur: 1, v: 0.9, vol: 0.95, rev: 0.08 },
             { t: 'bass', inst: 'gtr', fx: 'dist', pat: rep('X...............', 16), oct: 3, dur: 8, v: 0.6, vol: 0.55, rev: 0.25 },
-            { t: 'bass', inst: 'bass', pat: rep('X.x.X.x.X.x.X.x.', 16), oct: 1, dur: 1.8, v: 0.75, vol: 0.85, rev: 0.03 },
+            { t: 'bass', inst: 'bass', pat: rep('X.x.X.x.X.x.X.x.', 16), oct: 1, dur: 1.8, v: 0.75, vol: 0.55, rev: 0.03 },
             { t: 'drum', inst: 'mkick', pat: rep('X.xxX.xxX.xxX.xx', 8) + rep('xXxXxXxXxXxXxXxX', 8), v: 0.8, vol: 0.85, rev: 0.05 },
-            { t: 'drum', inst: 'msnare', pat: rep('....X.......X...', 16), v: 0.85, vol: 0.8, rev: 0.3 },
+            { t: 'drum', inst: 'msnare', pat: rep('....X.......X...', 16), v: 0.85, vol: 1, rev: 0.3 },
             { t: 'drum', inst: 'ride', pat: rep('X.x.X.x.X.x.X.x.', 16), v: 0.7, vol: 0.55, rev: 0.2 },
             { t: 'drum', inst: 'wartom', f: 120, pat: rep(fillHi, 2), v: 0.8, vol: 0.7, rev: 0.3 },
             { t: 'drum', inst: 'wartom', f: 75, pat: rep(fillLo, 2), v: 0.9, vol: 0.7, rev: 0.3 },
