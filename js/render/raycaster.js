@@ -185,7 +185,8 @@
       if (!n) continue;
       const rot = n.slice(-2) === '@r', name = rot ? n.slice(0, -2) : n;
       const t = BT.TX.get(name);
-      if (t) out[y * m.w + x] = { px: t.px, rot, anim: !!ANIM[name] };
+      // anim: the whole texture flows (open water) or only the columns in t.flow (a channel between stone curbs)
+      if (t) out[y * m.w + x] = { px: t.px, rot, anim: !!ANIM[name], f0: t.flow ? t.flow[0] : 0, f1: t.flow ? t.flow[1] : BT.TX.size };
     }
     m[cacheKey] = out;
     return out;
@@ -273,7 +274,7 @@
         if (fr0) {
           let u = tx, v = ty;
           if (fr0.rot) { u = ty; v = tx; }
-          if (fr0.anim) v = (v + flow) & (TS - 1);
+          if (fr0.anim && u >= fr0.f0 && u < fr0.f1) v = (v + flow) & (TS - 1);
           c = fr0.px[v * TS + u];
         } else c = floorT.px[ti];
         buf[rowF + x] = 0xff000000 | (Math.min(255, (((c >> 16) & 255) * sb + fwb) | 0) << 16) | (Math.min(255, (((c >> 8) & 255) * sg + fwg) | 0) << 8) | Math.min(255, ((c & 255) * sr + fwr) | 0);

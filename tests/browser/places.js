@@ -16,6 +16,7 @@ const { open, check, finish } = require('./_common');
     BT.DRESS.textureNames().forEach((n) => want.add(n));
     return [...want].filter((n) => !BT.TX.data[n]);
   })()`);
+  check(await T.eval("JSON.stringify(BT.TX.data.sewer_channel.flow)") === '[47,81]', 'only the water in a sewer channel flows; its stone curbs stay put');
   check(missing.length === 0, 'every texture the maps use exists' + (missing.length ? ': missing ' + missing.join(', ') : ''));
   const places = [
     ['sewers1', 'p-sewer'], ['sewers2', 'p-ratking', 'boss'], ['crypt1', 'p-crypt'], ['crypt2', 'p-morvane', 'boss'], ['keep1', 'p-keep'], ['tower2', 'p-tower'],

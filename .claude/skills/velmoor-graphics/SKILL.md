@@ -35,6 +35,7 @@ Read `velmoor-lore` first: `people.md` / `monsters.md` for looks, `set-dressing.
   - decals `dc_*`: transparent overlays, must read on any base wall; leave the wall visible around them.
   - floors/ceilings: opaque, tile both ways (check a 2x2 layout for seams).
   - props `pr_*`: transparent billboards standing on the bottom edge (or hanging from row 0); alpha < 40 is cut, > 220 is opaque, in between blends.
+  - animated floors (`water`, `water_deep`, `sewer_channel` in the raycaster's `ANIM`): the texture scrolls; if only part of it is water, set `t.flow = [firstCol, endCol]` so the stone around it stays still.
   - light sources: draw them bright; real light comes from `DR.LIGHTS` (add the name there).
 - Preview: `tools/preview/textures.html?f=pr_` (prefix filter) or `?on=sewer` (every decal over a wall). Then `node tests/browser/places.js` and Read the in-game screenshots.
 - Init budget: keep a pack under ~200 ms.

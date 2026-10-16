@@ -1404,6 +1404,7 @@
         const t = 0.75 - e * 0.08; d[i] += (30 - d[i]) * t; d[i + 1] += (90 + n * 40 - d[i + 1]) * t; d[i + 2] += (60 - d[i + 2]) * t;
       });
       grain(ctx, 10); A.grab('sewer_channel', c);
+      A.data.sewer_channel.flow = [47, 81]; // only these texture columns are water and flow; the curbs stay put
     }
     {
       const [c, ctx] = mk(); flags(ctx, '#62605a', 32, 0.4);
