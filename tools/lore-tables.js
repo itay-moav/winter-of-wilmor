@@ -1,7 +1,7 @@
 // Prints markdown tables generated from game data, used by the velmoor-lore skill.
 // node tools/lore-tables.js monsters|items|spells|maps
 const load = require('../tests/load');
-const ctx = load(['js/util.js', 'js/data.js', 'js/items.js', 'js/spells.js', 'js/monsters.js', 'js/mapgen.js', 'js/maps.js']);
+const ctx = load(load.select(load.WORLD));
 const BT = ctx.BT;
 BT.buildMaps();
 const what = process.argv[2] || 'monsters';

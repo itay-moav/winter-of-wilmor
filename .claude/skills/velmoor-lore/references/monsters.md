@@ -1,6 +1,6 @@
 # Monster Compendium
 
-Monsters are defined in `js/monsters.js`, and their art keys map to `BT.art.monster(key, {hue})`. The stat table at the bottom is generated: refresh it with `node tools/lore-tables.js monsters`.
+Monsters are defined in `js/data/monsters.js`, and their art keys map to `BT.art.monster(key, {hue})`. The stat table at the bottom is generated: refresh it with `node tools/lore-tables.js monsters`.
 
 ## Lore by tier
 
@@ -57,6 +57,12 @@ See `people.md` for their looks.
 - **The Mirror Maiden:** steps out of every mirror at once to guard the Still Hourglass.
 - **The Root Horror:** roots that rise into bark and claws around the Heartwood Seed.
 
+### The Folded Cellar (levels 6-9)
+Things made of Malthor's grief, folded into the pocket under his house.
+- **Lingering Memory:** a wisp of drifting snow, torn floral wallpaper and frozen picture fragments, with a faint sad face. Memories of a wedding, a birthday, a sickbed. Art: `memory`.
+- **Porcelain Sentinel:** one of Lyra's toy soldiers grown huge in the stillness: cracked glossy porcelain, painted rosy cheeks, a tin-blue tunic, a toy halberd, a wind-up key in its back and a painted green base. Slow (moves 2 hexes). Art: `porcelain`.
+- **The Echo of Irena** (guardian of `folded2`): a translucent frozen memory of Irena in her silver gown and frost veil, arms spread to protect her daughter's things, picture frames and a child's drawing orbiting her. She is not evil: defeated, she asks the party to tell Malthor to let Lyra go. Art: `irena_echo`.
+
 ### Summoned allies
 The Spirit Wolf, Phantasm, Pact Imp, Salamander, Pact Demon and Gold Dragon fight for the party when summoned by spells or items.
 
@@ -64,7 +70,8 @@ The Spirit Wolf, Phantasm, Pact Imp, Salamander, Pact Demon and Gold Dragon figh
 
 - Every new monster needs a **lore line** here, a faith or story tie, an art key (an existing key with a `hue` variant is fine), and a place in a map's `monsters` table or a fixed fight.
 - Tune with `node tests/sim.js` so that level-appropriate parties win normal fights with 70-95% HP left, and bosses at 50-90% win rate for the simple AI.
-- Expected party levels by area: sewers 1-4, crypt 4-8, keep 8-11, tower 11-14.
+- Expected party levels by area: sewers 1-4, crypt 4-8, keep 8-11, tower 11-14. Optional realms: the Concord realms 6-9, the Folded Cellar 7-10.
+- **Battle board:** a monster's `spd` is how many hexes it moves per turn (default 3; `fly` monsters 4). Give slow, heavy things `spd: 2` and fast beasts `spd: 4`. Only 4 of a group stand on the board at once; the rest wait and step in.
 
 ## Stat table (generated)
 
@@ -92,10 +99,13 @@ The Spirit Wolf, Phantasm, Pact Imp, Salamander, Pact Demon and Gold Dragon figh
 | sunwarden | The Sun-Warden | 8 | 1d1+200 | 0 | 2x 2d6+2 | casts: a flash of searing dawn; resist fire x0 holy x0 | dark_knight (hue 200) | sunvault (fixed) |
 | mirror_maiden | The Mirror Maiden | 8 | 1d1+170 | 1 | 1x 1d10 | casts: a shattering of mirrors, a frozen reflection; resist ice x0 | siren (hue 200) | mirrorhall (fixed) |
 | root_horror | The Root Horror | 8 | 1d1+230 | 2 | 3x 1d10+1 | poison; regen 4; resist fire x2 | troll (hue 70) | roothollow (fixed) |
+| memory | Lingering Memory | 6 | 5d8+4 | 3 | 1x 2d6 | casts: a cold remembrance; resist ice x0 mind x0.5 | memory | folded1, folded2, folded2 (fixed) |
+| porcelain | Porcelain Sentinel | 7 | 7d8+8 | 1 | 2x 1d8+1 | resist mind x0 ice x0.5 lightning x1.5 | porcelain | folded1, folded1 (fixed), folded2, folded2 (fixed) |
+| irena_echo | The Echo of Irena | 10 | 1d1+420 | -1 | 2x 2d8 | regen 3; casts: a lullaby of stillness, a breath of frozen time, a mother's grief; resist ice x0 | irena_echo | folded2 (fixed) |
 | gremlin | Sewer Gremlin | 2 | 2d6 | 6 | 1x 1d6 |  | imp (hue 90) | sewers1, sewers2 |
 | ghoul | Ghoul | 5 | 5d8 | 5 | 2x 1d8 | undead; paralyze | ghoul | crypt1, crypt1 (fixed), crypt2, crypt2 (fixed) |
-| ghost | Ghost | 5 | 4d8+4 | 3 | 1x 2d6 | undead; drain | ghost | crypt1, crypt2, sunvault, mirrorhall |
-| wraith | Wraith | 6 | 6d8 | 3 | 1x 2d6 | undead; drain; casts: a grave chill | wraith | crypt2, crypt2 (boss) |
+| ghost | Ghost | 5 | 4d8+4 | 3 | 1x 2d6 | undead; drain | ghost | crypt1, crypt2, sunvault, mirrorhall, folded1 |
+| wraith | Wraith | 6 | 6d8 | 3 | 1x 2d6 | undead; drain; casts: a grave chill | wraith | crypt2, crypt2 (boss), folded2 |
 | gargoyle | Gargoyle | 6 | 6d8+4 | 2 | 3x 1d6 |  | gargoyle | crypt2 |
 | mimic | Mimic | 5 | 7d8 | 4 | 1x 3d6 |  | mimic | crypt2 |
 | dark_elf | Dark Elf Witch | 6 | 5d6+4 | 4 | 1x 1d8 | casts: shadow bolts, a sleep hex | dark_elf | crypt2, keep1 |
@@ -109,7 +119,7 @@ The Spirit Wolf, Phantasm, Pact Imp, Salamander, Pact Demon and Gold Dragon figh
 | basilisk | Basilisk | 8 | 8d8 | 3 | 1x 2d8 | petrify; breath: its petrifying gaze | basilisk | keep1, keep2 |
 | ice_elemental | Ice Elemental | 8 | 8d8+8 | 2 | 2x 2d6 | breath: a blast of hail; resist ice x0 fire x2 | ice_elemental | keep1, keep2, keep2 (boss), tower1, mirrorhall |
 | wyvern | Wyvern | 9 | 9d10 | 2 | 2x 2d8 | poison | wyvern | keep1, keep2, keep2 (fixed) |
-| siren | Ice Siren | 8 | 6d8+6 | 3 | 1x 1d8 | casts: a bewitching song, a shard of ice | siren | keep2, keep2 (fixed), tower1, tower2, mirrorhall, mirrorhall (fixed) |
+| siren | Ice Siren | 8 | 6d8+6 | 3 | 1x 1d8 | casts: a bewitching song, a shard of ice | siren | keep2, keep2 (fixed), tower1, tower2, mirrorhall, mirrorhall (fixed), folded2 |
 | imp | Frost Imp | 8 | 6d8 | 1 | 2x 1d8 | casts: an ice spike | imp | tower1, tower2, tower3 |
 | demon | Bound Demon | 11 | 14d10+20 | -3 | 2x 3d8 | casts: hellfire | demon | tower2, tower2 (fixed), tower3 |
 | frost_giant | Frost Giant | 11 | 16d10+20 | 0 | 2x 4d8 | resist ice x0 fire x1.5 | frost_giant | tower1, tower1 (fixed), tower2 |

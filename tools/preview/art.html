@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Velmoor - Art Preview</title>
+<style>
+  body { background: #14121c; color: #ddd; font: 13px/1.4 Georgia, serif; margin: 16px; }
+  h1 { color: #cfe3ff; font-weight: normal; letter-spacing: 2px; }
+  h2 { color: #9fc3ff; font-weight: normal; border-bottom: 1px solid #333; padding-bottom: 4px; margin-top: 28px; }
+  h3 { color: #888; font-weight: normal; margin: 12px 0 4px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cell { text-align: center; font-size: 11px; color: #999; }
+  .p { width: var(--pw, 120px); height: calc(var(--pw, 120px) * 1.25); border: 1px solid #333; border-radius: 4px; overflow: hidden; background: #000; }
+  .m { width: var(--mw, 200px); height: var(--mw, 200px); border: 1px solid #2a2a2a; border-radius: 4px;
+       background: radial-gradient(ellipse at 50% 80%, #3a3a46 0%, #1c1b24 60%, #0d0c12 100%); }
+  .s { width: var(--sw, 480px); height: calc(var(--sw, 480px) * 0.5625); border: 1px solid #333; border-radius: 4px; overflow: hidden; }
+  .f { width: var(--fw, 150px); height: calc(var(--fw, 150px) * 2); border: 1px solid #2a2a2a; border-radius: 4px;
+       background: linear-gradient(#2a3048, #12141c 70%, #1c1a22); }
+  .nav a { color: #9fc3ff; margin-right: 12px; }
+  .tm { color: #6a6; font-size: 11px; }
+</style>
+</head>
+<body>
+<h1>Velmoor &mdash; Art Preview</h1>
+<div class="nav">
+  <a href="?">all</a><a href="?s=portraits">portraits</a><a href="?s=looks">looks</a><a href="?s=monsters">monsters</a>
+  <a href="?s=npcs">npcs</a><a href="?s=scenes">scenes</a><a href="?s=symbols">symbols</a><a href="?s=figures">figures</a>
+  <span class="tm" id="tm"></span>
+</div>
+<div id="out"></div>
+<script src="../../js/art/core.js"></script>
+<script src="../../js/art/symbols.js"></script>
+<script src="../../js/art/portraits.js"></script>
+<script src="../../js/art/figures.js"></script>
+<script src="../../js/art/keepsakes.js"></script>
+<script src="../../js/art/npcs.js"></script>
+<script src="../../js/art/monsters-beasts.js"></script>
+<script src="../../js/art/monsters-undead.js"></script>
+<script src="../../js/art/monsters-humanoids.js"></script>
+<script src="../../js/art/monsters-bosses.js"></script>
+<script src="../../js/art/monsters-folded.js"></script>
+<script src="../../js/art/scenes.js"></script>
+<script src="../../js/art/api.js"></script>
+<script>
+(function () {
+  var art = BT.art;
+  var q = {};
+  location.search.replace(/^\?/, '').split('&').forEach(function (kv) { if (kv) { var p = kv.split('='); q[p[0]] = decodeURIComponent(p[1] || ''); } });
+  var sections = (q.s || 'figures,portraits,looks,npcs,symbols,monsters,scenes').split(',');
+  var only = q.k ? q.k.split(',') : null;
+  var out = document.getElementById('out');
+  if (q.size) { document.documentElement.style.setProperty('--pw', q.size + 'px'); document.documentElement.style.setProperty('--mw', q.size + 'px'); document.documentElement.style.setProperty('--sw', q.size + 'px'); document.documentElement.style.setProperty('--fw', q.size + 'px'); }
+  var RACES = (q.race ? q.race.split(',') : ['human', 'elf', 'dwarf', 'hobbit', 'halfelf', 'halforc', 'gnome']);
+  var CLASSES = (q.cls ? q.cls.split(',') : ['warrior', 'paladin', 'rogue', 'bard', 'hunter', 'monk', 'conjurer', 'magician', 'sorcerer', 'wizard']);
+  var GENDERS = (q.g ? q.g.split(',') : ['f', 'm']);
+  var html = '';
+  function cell(cls, svg, label) { return '<div class="cell"><div class="' + cls + '">' + svg + '</div>' + label + '</div>'; }
+  var t0 = performance.now(), np = 0;
+
+  if (sections.indexOf('figures') >= 0 && art.figure) {
+    var FR = q.race ? q.race.split(',') : ['human', 'elf', 'dwarf', 'hobbit', 'halforc', 'gnome', 'halfelf'];
+    var nr = q.race ? FR.length : 1;
+    if (!only) GENDERS.forEach(function (g) {
+      for (var ri = 0; ri < nr; ri++) {
+        html += '<h2>Full-body figures: ' + FR[ri] + ' / ' + (g === 'f' ? 'female' : 'male') + '</h2><div class="grid">';
+        CLASSES.forEach(function (cls, ci) {
+          var look = { hair: (ri * 3 + ci) % art.lookOptions.hair, hairColor: (ri * 7 + ci * 3) % art.lookOptions.hairColor, skin: (ri + ci) % art.lookOptions.skin, eyes: (ci * 5 + ri) % art.lookOptions.eyes };
+          html += cell('f', art.figure({ race: FR[ri], cls: cls, gender: g, look: look, seed: ri * 10 + ci }), cls);
+        });
+        html += '</div>';
+      }
+    });
+    if (!q.race && !only) {
+      html += '<h2>Figures: races (warrior / magician)</h2><div class="grid">';
+      FR.forEach(function (race, ri) { GENDERS.forEach(function (g) { html += cell('f', art.figure({ race: race, cls: ri % 2 ? 'magician' : 'warrior', gender: g, look: { hair: ri, hairColor: ri + 2, skin: ri, eyes: ri } }), race + ' ' + g); }); });
+      html += '</div>';
+    }
+    html += '<h2>NPC figures</h2><div class="grid">';
+    art.npcFigureKeys.forEach(function (k) { if (!only || only.indexOf(k) >= 0) html += cell('f', art.npcFigure(k), k); });
+    html += '</div>';
+  }
+  if (sections.indexOf('portraits') >= 0) {
+    html += '<h2>Party portraits (race x class x gender)</h2>';
+    GENDERS.forEach(function (g) {
+      RACES.forEach(function (race, ri) {
+        html += '<h3>' + race + ' / ' + (g === 'f' ? 'female' : 'male') + '</h3><div class="grid">';
+        CLASSES.forEach(function (cls, ci) {
+          var look = { hair: (ri * 3 + ci) % art.lookOptions.hair, hairColor: (ri * 7 + ci * 3) % art.lookOptions.hairColor, skin: (ri + ci) % art.lookOptions.skin, eyes: (ci * 5 + ri) % art.lookOptions.eyes };
+          html += cell('p', art.portrait({ race: race, cls: cls, gender: g, look: look, seed: ri * 10 + ci }), cls); np++;
+        });
+        html += '</div>';
+      });
+    });
+  }
+  if (sections.indexOf('looks') >= 0) {
+    var lo = art.lookOptions;
+    GENDERS.forEach(function (g) {
+      html += '<h2>Hair styles (' + g + ')</h2><div class="grid">';
+      for (var h = 0; h < lo.hair; h++) { html += cell('p', art.portrait({ race: q.race || 'human', cls: q.cls || 'bard', gender: g, look: { hair: h, hairColor: h, skin: h % lo.skin, eyes: h } }), 'hair ' + h); np++; }
+      html += '</div>';
+    });
+    html += '<h2>Hair colors</h2><div class="grid">';
+    for (var c = 0; c < lo.hairColor; c++) { html += cell('p', art.portrait({ race: 'elf', cls: 'magician', gender: c % 2 ? 'm' : 'f', look: { hair: c, hairColor: c, skin: 0, eyes: c } }), 'color ' + c); np++; }
+    html += '</div><h2>Skin tones</h2><div class="grid">';
+    for (var s = 0; s < lo.skin; s++) { html += cell('p', art.portrait({ race: 'human', cls: 'monk', gender: s % 2 ? 'm' : 'f', look: { hair: s, hairColor: s + 2, skin: s, eyes: s } }), 'skin ' + s); np++; }
+    html += '</div><h2>Eye colors</h2><div class="grid">';
+    for (var e = 0; e < lo.eyes; e++) { html += cell('p', art.portrait({ race: 'halfelf', cls: 'sorcerer', gender: 'f', look: { hair: 1, hairColor: 3, skin: 1, eyes: e } }), 'eyes ' + e); np++; }
+    html += '</div>';
+  }
+  if (sections.indexOf('npcs') >= 0) {
+    html += '<h2>NPCs</h2><div class="grid">';
+    art.npcKeys.forEach(function (k) { if (!only || only.indexOf(k) >= 0) html += cell('p', art.npc(k), k); });
+    html += '</div>';
+  }
+  if (sections.indexOf('symbols') >= 0) {
+    html += '<h2>Faith symbols (200px, 64px, 24px)</h2><div class="grid" style="align-items:flex-end">';
+    ['dawn', 'pale', 'root'].forEach(function (k) {
+      html += '<div class="cell">' + art.symbol(k, 200) + '<br>' + art.symbol(k, 64) + ' ' + art.symbol(k, 24) + '<br>' + k + '</div>';
+    });
+    html += '</div>';
+  }
+  if (sections.indexOf('monsters') >= 0) {
+    html += '<h2>Monsters</h2><div class="grid">';
+    art.monsterKeys.forEach(function (k) { if (!only || only.indexOf(k) >= 0) html += cell('m', art.monster(k), k); });
+    html += '</div>';
+    if (!only) {
+      html += '<h3>Hue variants &amp; small size (120px)</h3><div class="grid" style="--mw:120px">';
+      ['slime', 'goblin', 'wolf', 'demon', 'dragon', 'spider'].forEach(function (k, i) {
+        html += cell('m', art.monster(k), k) + cell('m', art.monster(k, { hue: 90 + i * 40 }), k + ' hue');
+      });
+      html += '</div>';
+    }
+  }
+  if (sections.indexOf('scenes') >= 0) {
+    html += '<h2>Scenes</h2><div class="grid">';
+    art.sceneKeys.forEach(function (k) { if (!only || only.indexOf(k) >= 0) html += cell('s', art.scene(k), k); });
+    html += '</div>';
+  }
+  out.innerHTML = html;
+  document.getElementById('tm').textContent = 'generated in ' + Math.round(performance.now() - t0) + ' ms (' + np + ' portraits)';
+})();
+</script>
+</body>
+</html>

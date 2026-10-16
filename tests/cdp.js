@@ -6,8 +6,10 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 module.exports = async function (url, opts = {}) {
   const port = 9300 + Math.floor(Math.random() * 500);
   const dir = fs.mkdtempSync('/tmp/cdp-');
-  const proc = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required',
+  const proc = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--autoplay-policy=no-user-gesture-required', '--mute-audio',
     `--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, `--window-size=${opts.w || 1440},${opts.h || 900}`, 'about:blank'], { stdio: 'ignore' });
+  // never leave a headless Chrome behind (they kept playing the game's music after tests ended)
+  process.on('exit', () => { try { proc.kill('SIGKILL'); } catch (e) {} });
   let targets;
   for (let i = 0; i < 50; i++) {
     try { targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); if (targets.find((t) => t.type === 'page')) break; } catch (e) {}
@@ -56,7 +58,7 @@ module.exports = async function (url, opts = {}) {
       fs.writeFileSync(path, Buffer.from(r.result.data, 'base64'));
     },
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
-    close() { try { ws.close(); } catch (e) {} proc.kill(); },
+    close() { try { ws.close(); } catch (e) {} proc.kill('SIGKILL'); },
   };
   return T;
 };

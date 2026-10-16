@@ -22,7 +22,7 @@ const { open, finish, SHOTS } = require('./_common');
     await T.eval('BT.G.fx.light = { r: 4, steps: 99 }; BT.R.invalidate(); 1'); await T.sleep(300);
     await T.snap(n);
   }
-  await T.eval("BT.EX.guard(() => BT.CB.fight([['siren', 2], ['wolf', 3]], {})); 1"); await T.sleep(900); await T.key('f', 400); await T.snap('40-combat');
+  await T.eval("BT.EX.guard(() => BT.CB.fight([['siren', 2], ['wolf', 3]], {})); 1"); await T.sleep(1500); await T.snap('40-combat');
   console.log('screenshots written to ' + SHOTS);
   finish(T);
 })();

@@ -1,5 +1,5 @@
 .DS_Store
-assets/audio-previews/*.wav
+assets/audio/previews/*.wav
 node_modules/
 .claude/scheduled_tasks.lock
 .claude/settings.local.json

@@ -1,4 +1,4 @@
-// Headless combat balance simulator. node tests/sim.js
+// Headless combat balance simulator. node tests/sim.js [fights per scenario] [name filter regexp]
 const fs = require('fs'), vm = require('vm'), path = require('path');
 function boot() {
   const ctx = { console, Math, JSON, setTimeout, clearTimeout, Promise, Date };
@@ -6,7 +6,8 @@ function boot() {
   ctx.localStorage = { _d: {}, getItem(k) { return this._d[k] ?? null; }, setItem(k, v) { this._d[k] = String(v); }, removeItem(k) { delete this._d[k]; } };
   vm.createContext(ctx);
   const run = (f) => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f });
-  ['js/util.js', 'js/data.js', 'js/items.js', 'js/spells.js', 'js/monsters.js', 'js/mapgen.js', 'js/maps.js', 'js/state.js'].forEach(run);
+  const load = require('./load');
+  load.select(load.WORLD).forEach(run);
   const BT = ctx.BT;
   BT.R = { shake() {}, flash() {}, invalidate() {}, snap() {} };
   BT.MAPS = { sim: { id: 'sim', name: 'sim', style: 'crypt', depth: 2, fl: [[0]], w: 1, h: 1 } };
@@ -31,13 +32,15 @@ function boot() {
     return vals[0];
   };
   BT.UI = {
-    log() {}, sfx() {}, spellFx() {}, renderParty() {}, showMonsters() {}, hideOverlay() {}, floatText() {}, hitMonster() {}, updateHud() {}, showNpc() {},
+    log() {}, sfx() {}, syncSong() {}, cancelMenu() {}, spellFx() {}, renderParty() {}, showMonsters() {}, hideOverlay() {}, floatText() {}, hitMonster() {}, updateHud() {}, showNpc() {},
     menu: async (o) => pickAI(o),
     pickMember: async (t, f) => ctx.BT.G.party.find((c) => !f || f(c)) || null,
     confirm: async () => true, pause: async () => true,
   };
-  ['js/magic.js', 'js/combat.js'].forEach(run);
+  load.select(load.COMBAT, load.NO_VIEW).forEach(run);
   BT.CB.delay = 0;
+  BT.CB.auto = true;
+  BT.CB.aiHeals = false; // the balance targets assume a party that never heals
   BT.U.sleep = () => Promise.resolve();
   return { BT, ctx };
 }
@@ -68,7 +71,7 @@ async function trial(level, spec, opts, n) {
       c.hp = c.maxhp; c.sp = BT.ST.maxSp(c);
     }
     const r = await BT.CB.fight(spec, Object.assign({ noChest: true }, opts));
-    rounds += ctx.__rounds;
+    rounds += BT.CB.lastRounds;
     if (r === 'win') { wins++; hpLeft += G.party.reduce((a, c) => a + c.hp, 0) / G.party.reduce((a, c) => a + c.maxhp, 0); }
     deaths += G.party.filter((c) => c.status === 'dead').length;
   }
@@ -95,9 +98,13 @@ async function trial(level, spec, opts, n) {
     ['L11 Kargath', 11, [['kargath', 1], ['dark_knight', 3], ['ice_elemental', 1]], { boss: true, noRun: true }],
     ['L12 dragon', 12, [['dragon', 1]]],
     ['L12 tower mix', 12, [['demon', 2], ['tower_mage', 3]]],
+    ['L8 folded mix', 8, [['memory', 4], ['porcelain', 2]]],
+    ['L8 Echo of Irena', 8, [['irena_echo', 1], ['memory', 2]], { noRun: true }],
+    ['L8 Mirror Maiden', 8, [['mirror_maiden', 1], ['siren', 2]], { noRun: true }],
     ['L13 Malthor', 13, [['malthor', 1], ['crystal_golem', 1], ['tower_mage', 2]], { boss: true, noRun: true }],
   ];
-  for (const [name, lvl, spec, opts] of tests) {
+  const only = process.argv[3] ? new RegExp(process.argv[3], 'i') : null; // node tests/sim.js 40 Malthor
+  for (const [name, lvl, spec, opts] of tests.filter((t) => !only || only.test(t[0]))) {
     const r = await trial(lvl, spec, opts || {}, N);
     console.log(name.padEnd(18), JSON.stringify(r));
   }

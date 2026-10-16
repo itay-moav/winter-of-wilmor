@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Velmoor - Texture Preview</title>
+<style>
+  body { background: #14121c; color: #ddd; font: 12px/1.3 Georgia, serif; margin: 12px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cell { text-align: center; width: 136px; }
+  canvas { width: 128px; height: 128px; border: 1px solid #333; background: repeating-conic-gradient(#3a3640 0 25%, #2a2630 0 50%) 0 0 / 16px 16px; image-rendering: pixelated; }
+  .cell span { display: block; font-size: 10px; color: #9ab; word-break: break-all; }
+</style>
+</head>
+<body>
+<!-- Usage: textures.html?f=dc_   shows textures whose names start with the prefix (default: all).
+     textures.html?on=sewer      also composites every decal (dc_*) over that base wall. -->
+<div id="out" class="grid"></div>
+<script src="../../js/core/util.js"></script>
+<script src="../../js/data/rules.js"></script>
+<script src="../../js/art/core.js"></script>
+<script src="../../js/art/symbols.js"></script>
+<script src="../../js/art/portraits.js"></script>
+<script src="../../js/art/figures.js"></script>
+<script src="../../js/art/keepsakes.js"></script>
+<script src="../../js/art/npcs.js"></script>
+<script src="../../js/art/monsters-beasts.js"></script>
+<script src="../../js/art/monsters-undead.js"></script>
+<script src="../../js/art/monsters-humanoids.js"></script>
+<script src="../../js/art/monsters-bosses.js"></script>
+<script src="../../js/art/monsters-folded.js"></script>
+<script src="../../js/art/scenes.js"></script>
+<script src="../../js/art/api.js"></script>
+<script src="../../js/render/textures/core.js"></script>
+<script src="../../js/render/textures/city.js"></script>
+<script src="../../js/render/textures/dungeon-dressing.js"></script>
+<script src="../../js/render/textures/home-dressing.js"></script>
+<script>
+  BT.TX.init();
+  const q = new URLSearchParams(location.search), f = q.get('f') || '', on = q.get('on');
+  const out = document.getElementById('out');
+  let names = Object.keys(BT.TX.data).filter((n) => n.indexOf(f) === 0 && n.indexOf('|') < 0);
+  if (on) names = Object.keys(BT.TX.data).filter((n) => n.indexOf('dc_') === 0).map((d) => on + '|' + d);
+  for (const n of names) {
+    const t = BT.TX.get(n);
+    const d = document.createElement('div'); d.className = 'cell';
+    const c = document.createElement('canvas'); c.width = t.w; c.height = t.h;
+    c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(t.px.buffer.slice(0)), t.w, t.h), 0, 0);
+    d.appendChild(c);
+    const s = document.createElement('span'); s.textContent = n; d.appendChild(s);
+    out.appendChild(d);
+  }
+  document.title = 'tex ' + names.length;
+</script>
+</body>
+</html>

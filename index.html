@@ -4,7 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Winter of Velmoor</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/explore.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/battle.css">
+<link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 <div id="app">
@@ -38,24 +42,84 @@
 <div id="title"></div>
 <div id="modal"></div>
 
-<script src="js/util.js"></script>
-<script src="js/data.js"></script>
-<script src="js/items.js"></script>
-<script src="js/spells.js"></script>
-<script src="js/monsters.js"></script>
+<!-- Load order matters: core and data, then art and audio, then maps, state, textures, rendering,
+     the interface, combat, the world, and the app last. Tests read this list (tests/load.js). -->
+<!-- core & data -->
+<script src="js/core/util.js"></script>
+<script src="js/data/rules.js"></script>
+<script src="js/data/story.js"></script>
+<script src="js/data/items.js"></script>
+<script src="js/data/spells.js"></script>
+<script src="js/data/monsters.js"></script>
 <script src="assets/manifest.js"></script>
-<script src="js/art.js"></script>
-<script src="js/audio.js"></script>
-<script src="js/mapgen.js"></script>
-<script src="js/maps.js"></script>
-<script src="js/state.js"></script>
-<script src="js/textures.js"></script>
-<script src="js/render.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/magic.js"></script>
-<script src="js/combat.js"></script>
-<script src="js/town.js"></script>
-<script src="js/explore.js"></script>
-<script src="js/main.js"></script>
+<!-- art (SVG) -->
+<script src="js/art/core.js"></script>
+<script src="js/art/symbols.js"></script>
+<script src="js/art/portraits.js"></script>
+<script src="js/art/figures.js"></script>
+<script src="js/art/keepsakes.js"></script>
+<script src="js/art/npcs.js"></script>
+<script src="js/art/monsters-beasts.js"></script>
+<script src="js/art/monsters-undead.js"></script>
+<script src="js/art/monsters-humanoids.js"></script>
+<script src="js/art/monsters-bosses.js"></script>
+<script src="js/art/monsters-folded.js"></script>
+<script src="js/art/scenes.js"></script>
+<script src="js/art/api.js"></script>
+<!-- audio (Web Audio) -->
+<script src="js/audio/core.js"></script>
+<script src="js/audio/notation.js"></script>
+<script src="js/audio/instruments.js"></script>
+<script src="js/audio/tracks-ambient.js"></script>
+<script src="js/audio/tracks-battle.js"></script>
+<script src="js/audio/tracks-songs.js"></script>
+<script src="js/audio/sfx.js"></script>
+<script src="js/audio/player.js"></script>
+<!-- maps -->
+<script src="js/maps/grid.js"></script>
+<script src="js/maps/generator.js"></script>
+<script src="js/maps/builders.js"></script>
+<script src="js/maps/styles.js"></script>
+<script src="js/maps/town.js"></script>
+<script src="js/maps/dungeons.js"></script>
+<script src="js/maps/houses.js"></script>
+<script src="js/maps/realms.js"></script>
+<script src="js/maps/dressing.js"></script>
+<script src="js/maps/build.js"></script>
+<script src="js/core/state.js"></script>
+<!-- rendering -->
+<script src="js/render/textures/core.js"></script>
+<script src="js/render/textures/city.js"></script>
+<script src="js/render/textures/dungeon-dressing.js"></script>
+<script src="js/render/textures/home-dressing.js"></script>
+<script src="js/render/raycaster.js"></script>
+<script src="js/render/automap.js"></script>
+<!-- interface -->
+<script src="js/ui/core.js"></script>
+<script src="js/ui/art.js"></script>
+<script src="js/ui/party.js"></script>
+<script src="js/ui/sheet.js"></script>
+<!-- combat -->
+<script src="js/combat/hex.js"></script>
+<script src="js/combat/view.js"></script>
+<script src="js/world/magic.js"></script>
+<script src="js/combat/state.js"></script>
+<script src="js/combat/damage.js"></script>
+<script src="js/combat/movement.js"></script>
+<script src="js/combat/commands.js"></script>
+<script src="js/combat/party-ai.js"></script>
+<script src="js/combat/actions.js"></script>
+<script src="js/combat/monster-ai.js"></script>
+<script src="js/combat/battle.js"></script>
+<script src="js/combat/chest.js"></script>
+<!-- the world -->
+<script src="js/world/services.js"></script>
+<script src="js/world/explore.js"></script>
+<script src="js/world/events.js"></script>
+<script src="js/world/quests.js"></script>
+<script src="js/world/endings.js"></script>
+<!-- app -->
+<script src="js/app/main.js"></script>
+<script src="js/app/options.js"></script>
 </body>
 </html>

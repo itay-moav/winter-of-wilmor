@@ -1,11 +1,11 @@
 # Places & Buildings
 
-## Velmoor city map (`js/maps.js` `TOWN_ROWS`, 21x15 cells)
+## Velmoor city map (`js/maps/town.js` `TOWN_ROWS`, 21x15 cells)
 
 ```
 #####################      Legend
 #...................#      .  street        #  house (solid)     x  gargoyle statue
-#.A#.T#.S#.I#.R#.#W.#      f  Fountain of Concord (plaza)        g  graveyard ground
+#.A#.T#.S#.I#.R#.LW.#      f  Fountain of Concord (plaza)        g  graveyard ground
 #.##.##.##.##.##.##.#      A  Adventurers' Guild    T  The Frostbitten Flagon (tavern)
 #.........x........x#      S  Brannoc's Outfitters  I  The Warm Hearth Inn
 #.##.PP.f..M#.##x##.#      R  Hall of Review        M  Madame Zeyla's Energies
@@ -16,7 +16,7 @@
 #x..................#      Q  House of Orrin the Clockmaker (enterable, 3 floors)
 #.gg.OO.U#.##.##.##.#      Y  House of the Widow Ysolde (enterable, 2 floors)
 #.Cg.OO.##.##.##.##.#      U  Bramwick's Old Mill (enterable, 3 floors)
-#............x......#
+#............x......#      L  House of Malthor (enterable, 2 floors + the Folded Cellar)
 ##########G##########
 ```
 
@@ -26,7 +26,7 @@ The streets form a grid with 2x2 building blocks between them. The party starts 
 
 | Type | Look | Height (wall units) | Code |
 |---|---|---|---|
-| Plaster house | cream, ochre, sage, rose, pale blue or white plaster | 1-2.05 | `houseTex(v)` in `js/textures.js`; 14 variants, chosen per cell |
+| Plaster house | cream, ochre, sage, rose, pale blue or white plaster | 1-2.05 | `houseTex(v)` in `js/render/textures/city.js`; 14 variants, chosen per cell |
 | Timber-frame house | plaster with dark oak beams in diagonal patterns | 1-2.05 | same |
 | Stone house | grey, tan or blue-grey ashlar | 1-2.05 | same |
 | Brick house | red or brown brick | 1-2.05 | same |
@@ -60,6 +60,7 @@ The upper storeys repeat as the building gets taller. Heights come from `m.cellH
 | Orrin's House (Q, 2.4) | Dawn | dark timber, great clock face with a sun at its centre | side quest |
 | Ysolde's House (Y, 2.05) | Pale Hour | pale-blue stone, arched windows, frost wreath with snowflake | side quest |
 | Bramwick's Old Mill (U, 2.4) | Deep Root | dark planks, millstone, roots climbing the wall | side quest |
+| House of Malthor (L, 2.4) | Malthor's family (Dawn and Pale Hour) | blue-grey ashlar, silver trim, dark rimed arched windows, a sun and a snowflake carved together over a silver-blue door | side quest *The Folded House* |
 
 ## Street features
 - **Fountain of Concord** (f, 8,5): frozen, with three relic niches. It flows after victory.
@@ -67,18 +68,26 @@ The upper storeys repeat as the building gets taller. Heights come from `m.cellH
 - **Graves** (g): Root tree-and-ring stones (older) and Dawn sun-disc stones (newer). Never crosses.
 
 ## Interiors (`BT.INTERIORS`, style `interior`)
-These are 7x7 block-grid floors with wood-panelled walls (occasionally bookshelves), plank floors and beamed ceilings. The legend letters are:
 
-| Letter | Meaning |
-|---|---|
-| `e` | exit to the street |
-| `u` / `d` | stairs up / down |
-| `n` | note |
-| `c` | chest |
-| `f` | fight |
-| `m` | riddle mouth |
-| `p` | portal (locked until the riddle is solved) |
-| `S` | secret passage, which looks like a wall |
+Houses must read as **homes, not dungeons**: every floor is a small plan of real rooms (6x4 cells, rooms of 4-16 cells) joined by doors, each room with its own wallpaper, floor and ceiling, windows on the outer walls, and furniture. Only a house that hides a **pocket dimension** (Malthor's cellar) may lead into dungeon-like space, and then through an obvious threshold (a frosted cellar door, a portal, a mirror).
+
+Room looks used so far (texture names in `js/tex-interior.js`):
+
+| Room | Walls | Floor | Ceiling | Typical furniture and wall pictures |
+|---|---|---|---|---|
+| Velmoor hall / bedroom | `wall_rose` (rose wallpaper, oak wainscot) | `floor_oak`, `rug_red` | `ceil_plaster` | coat rack, bed, wardrobe, paintings |
+| Isenmark parlour / bedroom | `wall_blue` (pale-blue damask, silver trim) | `rug_blue` | `ceil_plaster` | armchair, frozen plant, vanity, Pale Hour wall altar, cold hearth |
+| Kitchen / cellar | `wall_stone` | `floor_kitchen` | `ceil_plaster` | cupboard, dining table, hanging pots |
+| Workshop | `wall_plaster` (whitewash and timber) | `floor_oak` | `ceil_plaster` | workbench, gears, tool board, clocks |
+| Clockmaker's shop | `wall_clocks` | `floor_oak` | `ceil_plaster` | counter, tall clocks, the Dawn's sun disc |
+| Study | `wall_books` | `rug_red` / `rug_blue` | `ceil_plaster` | desk with journal, bookcase |
+| Child's room | `wall_child` (butter-yellow with little suns and snowflakes) | `floor_child` | `ceil_plaster` | small bed, dollhouse (a tiny copy of the house with the family of three), rocking horse, drawings |
+| Attic | `wall_attic` | `floor_attic` | `ceil_attic` | trunks, spinning wheel, cobwebs |
+| Mill | `wall_mill` | `floor_mill` | `ceil_mill` | millstone, sacks, great gear, root carvings |
+
+Floor plans by house: Orrin's (`q1` shop/kitchen/hall, `q2` workshop/bedroom/landing, `q3` attic + hidden nook), Ysolde's (`y1` parlour/dining/kitchen/hall, `y2` study/bedroom/landing + mirror closet), Bramwick's mill (`u1` grinding floor/store/entry, `u2` loft/bins, `u3` cap room + root hollow), Malthor's (`l1` parlour/kitchen/hall/cellar, `l2` Lyra's room/bedroom/landing/study).
+
+Event letters in `marks`: `e` exit to the street, `u`/`d` stairs, `n`/`o`/`q` notes, `c` chest, `f` fight, `m` riddle mouth, `p` portal. Doors: `'x,y,d'`; `',secret'` looks like the wall (the clock wall, Ysolde's mirror, the root wall); `',cellar'` a heavy frosted cellar door.
 
 ## Dungeons and realms (generated)
 
@@ -91,8 +100,11 @@ Dungeon levels are generated from fixed seeds (`BT.LEVEL_SPECS`, `BT.POCKET_SPEC
 | keep | dark masonry, red snowflake banners (Malthor's heraldry), checkered floor | martial, cursed |
 | tower | blue crystal, glowing runes, starry ceiling | arcane, time-frozen |
 | vault | gold brick, sun reliefs, cream marble | radiant (the Dawn) |
-| mirror | crystal halls (tower textures) | reflective, still (the Pale Hour) |
+| mirror | ice-mirror panels in silver frames, polished ice floor | reflective, still (the Pale Hour) |
 | hollow | earth and stones, glowing roots, root-and-ring carvings | warm, deep (the Root) |
+| folded | old cellar brick fused with torn wallpaper and doorframes to nowhere, warped checker floor, frost | uncanny, still, grieving (Malthor's pocket dimension) |
+
+Every dungeon is **dressed to match its descriptions** (torches, water, moss and algae, bones, cots, clocks...): see `set-dressing.md`.
 
 ### Map table (generated with `node tools/lore-tables.js maps`)
 
@@ -108,7 +120,10 @@ Dungeon levels are generated from fixed seeds (`BT.LEVEL_SPECS`, `BT.POCKET_SPEC
 | tower1 | Tower - Crystal Halls | tower | 14x14 | 4 | from town | riddle (Lyra), Lyra reveal and locket, frost giants |
 | tower2 | Tower - Hall of Frozen Time | tower | 14x14 | 4 | from tower1 | riddle (time), dragon, Pale altar note, Pale shrine |
 | tower3 | Tower - The Crystal Chamber | tower | 10x10 | 5 | from tower2 | Malthor boss room, Pale shrine |
-| q1-q3, y1-y2, u1-u3 | house floors | interior | 7x7 | 1 | town houses | stairs, notes, chests, fights, secret doors, riddles, portals |
+| q1-q3, y1-y2, u1-u3 | house floors | interior | 6x4 | 1 | town houses | stairs, notes, chests, fights, secret doors, riddles, portals |
 | sunvault | The Sun Vault | vault | 10x10 | 2 | portal in q3 | Sun-Warden, Dawn shrine |
 | mirrorhall | Hall of Still Mirrors | mirror | 10x10 | 2 | portal in y2 | Mirror Maiden, teleport |
 | roothollow | The Root-Hollow | hollow | 10x10 | 2 | portal in u3 | Root Horror, darkness |
+| l1-l2 | Malthor's house | interior | 6x4 | 1 | town house L | family portrait, Lyra's room, Malthor's notes, the cellar stair |
+| folded1 | The Folded Cellar | folded | 14x14 | 2 | cellar stair in l1 | porcelain soldiers, Irena's humming, Pale shrine |
+| folded2 | The Folded Cellar - The Still Room | folded | 12x12 | 3 | from folded1 | the Echo of Irena in a copy of the parlour |

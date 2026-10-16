@@ -11,6 +11,7 @@
 | Sun Shard | `sunshard` | the Dawn's Concord relic | the Sun-Warden (sunvault) |
 | Still Hourglass | `stillglass` | the Pale Hour's Concord relic; its sand hangs motionless | the Mirror Maiden (mirrorhall) |
 | Heartwood Seed | `heartseed` | the Root's Concord relic; amber, beats like a heart | the Root Horror (roothollow) |
+| Irena's Still-Lily | `stilllily` | a silver lily pin, "cold as a held breath"; Irena wore it every day. Shown to Malthor in the final fight, it stills him one more round, and it adds a line to the ending | the Echo of Irena (folded2) |
 | Ring of Concord | `concordring` | three bands (gold, silver, wood) twined into one | Concord quest reward |
 
 ## Notable artifacts
@@ -18,6 +19,7 @@
 - **Holy Avenger:** a Dawn paladin blade from Morvane's tomb (taken from the crusaders who desecrated it), a bane of the undead.
 - **Frostguard Plate:** Kargath's spare armour. It resists ice.
 - **Sunblade, Dragonscale Mail, Archmage Staff:** endgame loot.
+- **Lyra's Lyre:** a small silver lyre, Irena's gift to her daughter. Songs played on it are 1.75x as strong. From the Echo of Irena.
 - **Horn of Thaw:** a bard's instrument that casts Inferno; a symbol of the winter's end.
 
 ## Magic
@@ -30,6 +32,17 @@
 - **The Rite of Stillness** is Pale Hour ritual magic, not an arcane spell. Only Malthor has performed it, with Sevrine's teaching.
 - **Class change:** mages who master three spell levels may begin a new school. Sorcerer requires Conjurer or Magician; Wizard requires Sorcerer plus one other.
 - **Bard songs** (they need an instrument and "voice"; a drink at the Tavern restores voice): Warding Hymn, March of Iron, Hearthfire Lay, Lantern Song, Lullaby of Frost, Requiem and Song of Swiftness. They are folk magic, not tied to any faith. The Requiem is sung at funerals of all three faiths.
+- **Song music:** while a song lasts (in battle, or carried through exploration), its own piece takes over and the regular music fades to a faint background. Battle songs are heavy folk/power metal, gentle songs classical or Irish, mystical songs Arabic/oriental. All are arrangements of public-domain melodies (see `music.md`).
+
+| Song | Effect | Music |
+|---|---|---|
+| Warding Hymn | party AC -3 | Beethoven, *Ode to Joy*, as a choir-and-horns power-metal anthem |
+| March of Iron | +2 hit, +3 damage | Prokofiev, March from *The Love for Three Oranges* (1919), as a stomping metal march |
+| Song of Swiftness | act first, always escape | Grieg, *In the Hall of the Mountain King*, speed metal that accelerates 110 → 200 bpm |
+| Hearthfire Lay | heals each round / every few steps | the *Londonderry Air* on tin whistle, fiddle, harp and bodhrán, with crackling embers |
+| Lantern Song | light while exploring | Grieg, *Morning Mood*, flute and oboe trading the theme |
+| Lullaby of Frost | foes fall asleep | after Rimsky-Korsakov's *Scheherazade* violin theme, on kamancheh, qanun and glass bells |
+| Requiem | wracks the undead | Grieg, *Åse's Death*, recast in the Arabic Hijaz mode on ney, oud and darbuka |
 
 ## Spell table (generated: `node tools/lore-tables.js spells`)
 
@@ -157,6 +170,7 @@
 | lute | Lute | instrument |  | 60 | only bard |
 | silverflute | Silver Flute | instrument |  | 2000 | magic; only bard |
 | frosthorn | Horn of Thaw | instrument |  | 5000 | magic; use: INFR; only bard |
+| lyralyre | Lyra's Lyre | instrument |  | 6000 | magic; only bard; A small silver lyre, Irena's gift to her daughter. Its songs carry a mother's warmth. |
 | harpofages | Harp of Ages | instrument |  | 10000 | magic; only bard |
 | torch | Torch | use |  | 5 | use: light/steps |
 | potion | Healing Potion | use |  | 40 | use: heal |
@@ -178,4 +192,5 @@
 | stillglass | Still Hourglass | quest |  | 0 | QUEST; An hourglass whose sand hangs motionless. The Pale Hour's relic of the Concord. |
 | heartseed | Heartwood Seed | quest |  | 0 | QUEST; A seed of glowing amber wood that beats faintly, like a heart. The Deep Root's relic of the Concord. |
 | concordring | Ring of Concord | ring | AC-3, +1 st +1 iq +1 dx +1 cn +2 lk | 6000 | magic; resist magic; Three bands - gold, silver and wood - twined into one. |
+| stilllily | Irena's Still-Lily | quest |  | 0 | QUEST; A silver lily pin, cold as a held breath. Irena wore it every day of her life. |
 | locket | Lyra's Locket | quest |  | 0 | QUEST; A silver locket, cold as ice. Inside: a girl and her father, laughing. |

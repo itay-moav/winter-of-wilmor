@@ -1,6 +1,6 @@
 # Main Storyline
 
-The main quest is a chain of three keys, each held by a cursed guardian whom Malthor bound to his service. Each key opens the next area from the city. Text in the game lives in `js/data.js` (`D.STORY`) and `js/maps.js` (event text).
+The main quest is a chain of three keys, each held by a cursed guardian whom Malthor bound to his service. Each key opens the next area from the city. Text in the game lives in `js/data/story.js` (`D.STORY`) and `js/maps/dungeons.js`, `houses.js`, `realms.js` (event text).
 
 ## Premise (intro screens)
 
@@ -61,7 +61,7 @@ The main quest is a chain of three keys, each held by a cursed guardian whom Mal
 - **Lore found:**
   - Hundreds of clocks, all stopped at the same minute.
   - A Pale Hour altar with Malthor's note: "Sevrine says the Mother keeps what we love. Then why does Lyra never wake?"
-- **Final boss (`tower3`, the Crystal Chamber): Malthor, Archmage of Winter**, with crystal sentinels and Pale Hour magi. If the party carries Lyra's Locket, he falters at the sight of it and the battle starts with a 2-round time-stop on his side.
+- **Final boss (`tower3`, the Crystal Chamber): Malthor, Archmage of Winter**, with crystal sentinels and Pale Hour magi. If the party carries Lyra's Locket, he falters at the sight of it and the battle starts with a 2-round time-stop on his side. If they also carry **Irena's Still-Lily** (side quest *The Folded House*), they tell him what Irena's echo said, and he is stilled one round longer.
 - **Expected level:** 13-14.
 
 ## Ending
@@ -78,8 +78,9 @@ The main quest is a chain of three keys, each held by a cursed guardian whom Mal
    - **pale:** Sevrine preaches "in memory - not in ice".
    - **root:** a green shoot rises where the locket lies.
    - **none:** "You never knelt at any of their altars..."
-5. If the Concord side quest is complete, the Fountain of Concord runs again and each faith tends it in turn.
-6. Closing line: a bard in the Frostbitten Flagon is writing your song.
+5. If the party met the Echo of Irena (flag `irena`), Malthor goes home, walks down his cellar stairs (twelve steps, no more) and lights a candle for Irena and one for the Dawn.
+6. If the Concord side quest is complete, the Fountain of Concord runs again and each faith tends it in turn.
+7. Closing line: a bard in the Frostbitten Flagon is writing your song.
 
 After the ending the city is playable in spring: no snow, a blue sky, a flowing fountain, and no random encounters.
 
@@ -92,5 +93,5 @@ After the ending the city is playable in spring: no snow, a blue sky, a flowing 
 - What happens to **Malthor** after the thaw: exile, penance, or service to one of the faiths?
 - **Isenmark's response:** did Sevrine act on her own, or under orders from Isenmark's High Matrons?
 - **Brother Caddoc's** zealot faction, kept from burning the Pale Hall, may become a post-game antagonist.
-- **Lyra's mother, Irena of Isenmark:** how she died, and whether the Pale Hour had a claim on Lyra.
+- **Lyra's mother, Irena of Isenmark:** she died of the same wasting fever (told in *The Folded House*). Still open: whether the Pale Hour had a claim on Lyra, and who carved both a sun and a snowflake on her grave.
 - The rest of buried **Vael-Harrow** beneath the crypt.

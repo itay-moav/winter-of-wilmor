@@ -1,4 +1,5 @@
-// End-to-end bot: walks every dungeon, fights, solves riddles, kills all bosses and reaches the ending.
+// End-to-end bot: walks every dungeon, fights, solves riddles, kills all bosses, clears the Folded House side quest
+// and reaches the ending.
 // node tests/playthrough.js [seed-runs]
 const fs = require('fs'), vm = require('vm'), path = require('path');
 const quiet = !process.argv.includes('-v');
@@ -10,14 +11,15 @@ function boot() {
   ctx.localStorage = { _d: {}, getItem(k) { return this._d[k] ?? null; }, setItem(k, v) { this._d[k] = String(v); }, removeItem(k) { delete this._d[k]; } };
   vm.createContext(ctx);
   const run = (f) => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f });
-  ['js/util.js', 'js/data.js', 'js/items.js', 'js/spells.js', 'js/monsters.js', 'js/mapgen.js', 'js/maps.js', 'js/state.js'].forEach(run);
+  const load = require('./load');
+  load.select(load.WORLD).forEach(run);
   const BT = ctx.BT;
   BT.R = { shake() {}, flash() {}, invalidate() {}, snap() {}, animate: async () => {}, bump: async () => {}, drawMap() {} };
   const logs = [];
   const answerFor = { 'The more of me you take': 'footsteps', 'always coming': 'tomorrow', 'Speak the name': 'Lyra', 'what did the father': 'time' };
   BT.UI = {
     log: (h) => { logs.push(h.replace(/<[^>]+>/g, '')); if (!quiet) console.log('   ', h.replace(/<[^>]+>/g, '')); },
-    sfx() {}, spellFx() {}, renderParty() {}, showMonsters() {}, hideOverlay() {}, floatText() {}, hitMonster() {}, updateHud() {}, showNpc() {}, art: () => '', toast() {},
+    sfx() {}, syncSong() {}, cancelMenu() {}, spellFx() {}, renderParty() {}, showMonsters() {}, hideOverlay() {}, floatText() {}, hitMonster() {}, updateHud() {}, showNpc() {}, art: () => '', toast() {},
     pause: async (t) => { logs.push('[pause] ' + t.replace(/<[^>]+>/g, '')); ctx.__lastPause = t; return true; },
     confirm: async () => true,
     input: async () => { const q = ctx.__lastPause || ''; for (const k in answerFor) if (q.includes(k)) return answerFor[k]; return 'x'; },
@@ -46,9 +48,11 @@ function boot() {
       return vals[0];
     },
   };
-  ['js/magic.js', 'js/combat.js', 'js/town.js', 'js/explore.js'].forEach(run);
+  load.select(load.COMBAT, load.NO_VIEW).forEach(run);
+  load.select(['js/world/services.js', 'js/world/explore.js', 'js/world/events.js', 'js/world/quests.js', 'js/world/endings.js']).forEach(run);
   BT.EX.transition = async () => {};
   BT.CB.delay = 0;
+  BT.CB.auto = true;
   BT.U.sleep = () => Promise.resolve();
   BT.main = { titleMenu: async () => { throw new Error('GAME OVER in ' + BT.G.map + ' levels ' + BT.G.party.map((c) => c.level).join('/') + ' last: ' + logs.slice(-12).join(' / ')); }, playing: true };
   return { BT, ctx, logs };
@@ -167,6 +171,29 @@ async function play() {
   }
   const lvl = () => G.party.map((c) => c.level).join('/');
 
+  // Malthor's house -> the cellar stair -> the Folded Cellar -> the Echo of Irena.
+  async function foldedHouse() {
+    await BT.EX.changeMap('l1');
+    const l1 = BT.MAPS.l1, cellar = find(l1, (e) => e.to === 'folded1');
+    await walkTo(cellar[0], cellar[1]);
+    if (G.map !== 'folded1') throw new Error('the cellar stair did not lead into the Folded Cellar');
+    const f1 = BT.MAPS.folded1;
+    await exploreSome(f1, 0.5);
+    town();
+    if (G.map !== 'folded1') await BT.EX.changeMap('folded1');
+    await walkTo(f1.downPos.x, f1.downPos.y);
+    if (G.map !== 'folded2') throw new Error('no way down to the Still Room');
+    const f2 = BT.MAPS.folded2, heart = find(f2, (e) => e.setFlag === 'irena');
+    for (let tries = 0; !G.flags.irena && tries < 6; tries++) {
+      try { await walkTo(heart[0], heart[1]); }
+      catch (e) { if (!/GAME OVER/.test(e.message)) throw e; for (const c of G.party) c.status = 'ok'; }
+      town();
+      if (G.map !== 'folded2') await BT.EX.changeMap('folded2');
+    }
+    report.push('folded2: the Echo of Irena ' + (G.flags.irena ? 'freed' : 'NOT freed') + ' at levels ' + lvl() + ', still-lily ' + ST.hasItem('stilllily'));
+    if (!G.flags.irena || !ST.hasItem('stilllily')) throw new Error('the Folded House side quest was not completed');
+  }
+
   town();
   const plan = [
     ['sewers1', null], ['sewers2', 'ratking'], ['crypt1', null], ['crypt2', 'morvane'],
@@ -222,6 +249,8 @@ async function play() {
       report.push(id + ': took stairs at levels ' + lvl() + ' -> now in ' + G.map);
       if (G.map === id) throw new Error('could not take stairs on ' + id);
     }
+    // side quest: the Folded House, between the Keep and the tower (recommended level 7-10)
+    if (boss === 'kargath') await foldedHouse();
     // after a boss, the next area is entered from town via gate (requires key)
     if (boss && boss !== 'malthor') {
       const nextGate = { ratking: 'crypt', morvane: 'keep', kargath: 'tower' }[boss];

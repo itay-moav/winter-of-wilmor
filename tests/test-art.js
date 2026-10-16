@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-/* Smoke test for js/art.js: loads it in a vm sandbox (window = {}) and calls
- * every generator with every key and a sweep of portrait combinations.
+/* Smoke test for the procedural art package js/art/: loads its scripts in order in a vm sandbox
+ * (window = {}) and calls every generator with every key and a sweep of portrait combinations.
  * Usage: node tests/test-art.js
  */
 'use strict';
@@ -8,10 +8,12 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const src = fs.readFileSync(path.join(__dirname, '..', 'js', 'art.js'), 'utf8');
+/* same order as the <script> tags in index.html */
+const ART_FILES = ['core', 'symbols', 'portraits', 'figures', 'keepsakes', 'npcs', 'monsters-beasts', 'monsters-undead',
+  'monsters-humanoids', 'monsters-bosses', 'monsters-folded', 'scenes', 'api'].map(n => 'js/art/' + n + '.js');
 const ctx = { window: {} };
 vm.createContext(ctx);
-vm.runInContext(src, ctx, { filename: 'art.js' });
+ART_FILES.forEach(rel => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', rel), 'utf8'), ctx, { filename: rel }));
 const art = ctx.window.BT && ctx.window.BT.art;
 
 let failures = 0, checks = 0;
@@ -54,9 +56,9 @@ function checkSvg(label, s) {
 if (!art) { console.error('BT.art not defined'); process.exit(1); }
 ['portrait', 'monster', 'npc', 'scene'].forEach(fn => { if (typeof art[fn] !== 'function') fail('missing function ' + fn); });
 
-const REQ_MONSTERS = ['rat', 'giant_rat', 'wererat', 'thief', 'cutthroat', 'slime', 'spider', 'bat', 'kobold', 'goblin', 'orc', 'wolf', 'skeleton', 'zombie', 'ghoul', 'wraith', 'ghost', 'lich', 'gargoyle', 'golem', 'dark_knight', 'ogre', 'troll', 'harpy', 'cultist', 'dark_mage', 'imp', 'demon', 'wyvern', 'dragon', 'ice_elemental', 'frost_giant', 'basilisk', 'mimic', 'siren', 'dark_elf', 'vampire', 'ratking', 'morvane', 'kargath', 'malthor', 'statue'];
-const REQ_NPCS = ['barkeep', 'innkeeper', 'priestess', 'merchant', 'guildmaster', 'sage', 'mystic', 'malthor', 'lyra', 'morvane', 'kargath', 'ratking', 'mouth', 'ghost_girl', 'matron', 'rootwarden', 'dawnpriest'];
-const REQ_SCENES = ['title', 'victory', 'gameover', 'town', 'sewers', 'crypt', 'keep', 'tower'];
+const REQ_MONSTERS = ['rat', 'giant_rat', 'wererat', 'thief', 'cutthroat', 'slime', 'spider', 'bat', 'kobold', 'goblin', 'orc', 'wolf', 'skeleton', 'zombie', 'ghoul', 'wraith', 'ghost', 'lich', 'gargoyle', 'golem', 'dark_knight', 'ogre', 'troll', 'harpy', 'cultist', 'dark_mage', 'imp', 'demon', 'wyvern', 'dragon', 'ice_elemental', 'frost_giant', 'basilisk', 'mimic', 'siren', 'dark_elf', 'vampire', 'ratking', 'morvane', 'kargath', 'malthor', 'statue', 'memory', 'porcelain', 'irena_echo'];
+const REQ_NPCS = ['barkeep', 'innkeeper', 'priestess', 'merchant', 'guildmaster', 'sage', 'mystic', 'malthor', 'lyra', 'morvane', 'kargath', 'ratking', 'mouth', 'ghost_girl', 'matron', 'rootwarden', 'dawnpriest', 'irena'];
+const REQ_SCENES = ['title', 'victory', 'gameover', 'town', 'sewers', 'crypt', 'keep', 'tower', 'folded'];
 
 REQ_MONSTERS.forEach(k => { if (art.monsterKeys.indexOf(k) < 0) fail('monsterKeys missing ' + k); });
 REQ_NPCS.forEach(k => { if (art.npcKeys.indexOf(k) < 0) fail('npcKeys missing ' + k); });
@@ -87,7 +89,8 @@ REQ_MONSTERS.concat(art.monsterKeys).forEach(k => {
 checkSvg('monster unknown', art.monster('nope'));
 REQ_NPCS.concat(art.npcKeys).forEach(k => checkSvg('npc ' + k, art.npc(k)));
 checkSvg('npc unknown', art.npc('nope'));
-REQ_SCENES.forEach(k => checkSvg('scene ' + k, art.scene(k)));
+REQ_SCENES.forEach(k => { if (art.sceneKeys.indexOf(k) < 0) fail('sceneKeys missing ' + k); });
+REQ_SCENES.concat(art.sceneKeys).forEach(k => checkSvg('scene ' + k, art.scene(k)));
 checkSvg('scene unknown', art.scene('nope'));
 if (typeof art.symbol !== 'function') fail('missing function symbol');
 else {
@@ -97,7 +100,7 @@ else {
 }
 
 // full-body figures
-const REQ_FIGS = ['priestess', 'matron', 'rootwarden', 'dawnpriest', 'barkeep', 'innkeeper', 'merchant', 'guildmaster', 'sage', 'mystic', 'malthor', 'lyra', 'ghost_girl', 'kargath'];
+const REQ_FIGS = ['priestess', 'matron', 'rootwarden', 'dawnpriest', 'barkeep', 'innkeeper', 'merchant', 'guildmaster', 'sage', 'mystic', 'malthor', 'lyra', 'ghost_girl', 'kargath', 'irena'];
 if (typeof art.figure !== 'function' || typeof art.npcFigure !== 'function') fail('missing figure/npcFigure');
 else {
   let nf = 0, tf = Date.now();

@@ -14,7 +14,7 @@ The lore is split by topic. Read only the files you need.
 | File | Read it when you... |
 |---|---|
 | [references/storyline.md](references/storyline.md) | touch the main quest: acts, bosses, keys, riddles, Lyra's appearances, endings |
-| [references/side-quests.md](references/side-quests.md) | add or change optional content (the Concord of Velmoor, faith pledges, statues), or want quest seeds |
+| [references/side-quests.md](references/side-quests.md) | add or change optional content (the Concord of Velmoor, faith pledges, statues, the Folded House), or want quest seeds |
 | [references/world-history.md](references/world-history.md) | need the timeline, geography, the three cities, or the cause of the winter |
 | [references/religions.md](references/religions.md) | write anything involving the Dawn, the Pale Hour or the Deep Root: gods, creeds, symbols, clergy, rites, conflict, game mechanics |
 | [references/people.md](references/people.md) | write an NPC or an art brief: names, roles, faiths, looks, voices, art keys |
@@ -22,6 +22,8 @@ The lore is split by topic. Read only the files you need.
 | [references/botanicals.md](references/botanicals.md) | need plants, herbs, fungi or trees (mostly lore hooks not yet in the game) |
 | [references/places-and-buildings.md](references/places-and-buildings.md) | edit the city, building types and names, interiors, dungeons, or architecture by faith |
 | [references/items-and-magic.md](references/items-and-magic.md) | change relics, artifacts, gear, spell schools or bard songs |
+| [references/set-dressing.md](references/set-dressing.md) | dress a place so it matches its text: wall decals, floors, props (furniture, objects), lights; the full object catalogue |
+| [references/music.md](references/music.md) | change music: tracks per place, battle themes, the bard songs and their classical sources |
 | [references/style-guide.md](references/style-guide.md) | write text or art direction: tone, naming per culture, content rules |
 | [references/code-map.md](references/code-map.md) | turn lore into code: data files, event types, how to add a quest, map, NPC or monster, and the tests |
 

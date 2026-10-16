@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Velmoor - Audio Preview</title>
+<style>
+  body { margin: 0; padding: 24px 32px; background: #0d1420; color: #d8e2ee; font: 15px/1.4 Georgia, 'Times New Roman', serif; }
+  h1 { margin: 0 0 4px; font-weight: normal; letter-spacing: 2px; color: #bcd7f2; }
+  .sub { color: #7d93ab; margin-bottom: 20px; font-style: italic; }
+  h2 { font-weight: normal; color: #9fc2e6; border-bottom: 1px solid #26374d; padding-bottom: 4px; margin-top: 26px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  button { background: #18253a; color: #d8e2ee; border: 1px solid #34506f; border-radius: 4px; padding: 7px 14px;
+           font: inherit; cursor: pointer; min-width: 92px; }
+  button:hover { background: #22344f; border-color: #5f86b0; }
+  button.on { background: #35587f; border-color: #9cc8f5; color: #fff; }
+  .controls { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; background: #121d2d; padding: 14px 18px;
+              border: 1px solid #26374d; border-radius: 6px; }
+  label { display: flex; align-items: center; gap: 10px; }
+  input[type=range] { width: 180px; }
+  .val { width: 34px; text-align: right; color: #9fc2e6; }
+  #status { color: #7d93ab; }
+  .opts { margin-top: 10px; display: flex; gap: 24px; color: #9fb3c8; }
+</style>
+</head>
+<body>
+<h1>Velmoor &mdash; Audio Preview</h1>
+<div class="sub">All sound is synthesized live with the Web Audio API. Click anything to start the audio engine.</div>
+
+<div class="controls">
+  <label>Music <input id="mv" type="range" min="0" max="1" step="0.01"><span class="val" id="mvv"></span></label>
+  <label>SFX <input id="sv" type="range" min="0" max="1" step="0.01"><span class="val" id="svv"></span></label>
+  <button id="mute">Mute</button>
+  <button id="stop">Stop music</button>
+  <span id="status">Audio not started.</span>
+</div>
+
+<h2>Music</h2>
+<div class="grid" id="tracks"></div>
+
+<h2>Bard songs</h2>
+<div class="sub">A song plays over the music: the music keeps going, ducked to a whisper, until the song stops.</div>
+<div class="grid" id="songs"></div>
+<div class="opts">
+  <button id="songStop">Stop song</button>
+  <button id="duckDemo">Song over music demo</button>
+  <span id="songStatus"></span>
+</div>
+
+<h2>Sound effects</h2>
+<div class="grid" id="sfx"></div>
+<div class="opts">
+  <label>Pitch <input id="pitch" type="range" min="0.5" max="2" step="0.01" value="1"><span class="val" id="pv">1.00</span></label>
+  <label>Volume <input id="svol" type="range" min="0" max="1" step="0.01" value="1"><span class="val" id="vv">1.00</span></label>
+  <label><input type="checkbox" id="rnd"> random pitch (&plusmn;8%)</label>
+</div>
+
+<script src="../../js/audio/core.js"></script>
+<script src="../../js/audio/notation.js"></script>
+<script src="../../js/audio/instruments.js"></script>
+<script src="../../js/audio/tracks-ambient.js"></script>
+<script src="../../js/audio/tracks-battle.js"></script>
+<script src="../../js/audio/tracks-songs.js"></script>
+<script src="../../js/audio/sfx.js"></script>
+<script src="../../js/audio/player.js"></script>
+<script>
+(function () {
+  var A = BT.audio, $ = function (id) { return document.getElementById(id); };
+  var trackBtns = {};
+
+  function start() {
+    var ok = A.init();
+    $('status').textContent = ok === false ? 'Web Audio is not available in this browser.' : 'Audio running.';
+  }
+  document.addEventListener('pointerdown', start, true);
+  document.addEventListener('keydown', start, true);
+
+  function refreshTracks() {
+    var cur = A.currentTrack ? A.currentTrack() : null;
+    for (var k in trackBtns) trackBtns[k].className = (k === cur) ? 'on' : '';
+  }
+
+  A.musicTracks.forEach(function (t) {
+    var b = document.createElement('button');
+    b.textContent = t;
+    b.onclick = function () { start(); A.music(t); refreshTracks(); };
+    trackBtns[t] = b;
+    $('tracks').appendChild(b);
+  });
+  A.sfxNames.forEach(function (n) {
+    var b = document.createElement('button');
+    b.textContent = n;
+    b.onclick = function () {
+      start();
+      var p = +$('pitch').value;
+      if ($('rnd').checked) p *= 0.92 + Math.random() * 0.16;
+      A.sfx(n, { pitch: p, volume: +$('svol').value });
+    };
+    $('sfx').appendChild(b);
+  });
+
+  var songBtns = {}, SONG_NAMES = { ward: 'Warding Hymn', march: 'March of Iron', hearth: 'Hearthfire Lay', lantern: 'Lantern Song',
+    lull: 'Lullaby of Frost', requiem: 'Requiem', swift: 'Song of Swiftness' };
+  function refreshSongs() {
+    var cur = A.currentSong();
+    for (var k in songBtns) songBtns[k].className = (k === cur) ? 'on' : '';
+    $('songStatus').textContent = cur ? 'Singing: ' + SONG_NAMES[cur] + (A.currentTrack() ? ' (over ' + A.currentTrack() + ')' : '') : '';
+  }
+  A.songTracks.forEach(function (t) {
+    var id = t.replace(/^song_/, ''), b = document.createElement('button');
+    b.textContent = SONG_NAMES[id] || id;
+    b.title = t;
+    b.onclick = function () { start(); A.song(id); refreshSongs(); };
+    songBtns[id] = b;
+    $('songs').appendChild(b);
+  });
+  $('songStop').onclick = function () { A.song(null); refreshSongs(); };
+  var demoTimers = [];
+  $('duckDemo').onclick = function () {
+    start();
+    demoTimers.forEach(clearTimeout); demoTimers = [];
+    A.song(null); A.music('combat_city'); refreshTracks(); refreshSongs();
+    demoTimers.push(setTimeout(function () { A.song('ward'); refreshSongs(); }, 5000));
+    demoTimers.push(setTimeout(function () { A.song(null); refreshSongs(); }, 25000));
+  };
+
+  $('stop').onclick = function () { A.music(null); refreshTracks(); refreshSongs(); };
+  function muteLabel() { $('mute').textContent = A.isMuted() ? 'Unmute' : 'Mute'; $('mute').className = A.isMuted() ? 'on' : ''; }
+  $('mute').onclick = function () { A.toggleMute(); muteLabel(); };
+
+  function bindSlider(id, valId, get, set) {
+    var el = $(id);
+    el.value = get(); $(valId).textContent = (+el.value).toFixed(2);
+    el.oninput = function () { set(+el.value); $(valId).textContent = (+el.value).toFixed(2); };
+  }
+  bindSlider('mv', 'mvv', A.getMusicVolume, A.setMusicVolume);
+  bindSlider('sv', 'svv', A.getSfxVolume, A.setSfxVolume);
+  bindSlider('pitch', 'pv', function () { return 1; }, function () {});
+  bindSlider('svol', 'vv', function () { return 1; }, function () {});
+  muteLabel();
+})();
+</script>
+</body>
+</html>

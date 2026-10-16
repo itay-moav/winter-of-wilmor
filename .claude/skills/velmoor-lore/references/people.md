@@ -1,6 +1,6 @@
 # People of Velmoor
 
-Every entry lists role, faith, looks (written as an art brief), voice and where the person appears. The art keys refer to `js/art.js`: `npc(key)` is the bust portrait, `npcFigure(key)` the full body, and `monster(key)` the combat sprite.
+Every entry lists role, faith, looks (written as an art brief), voice and where the person appears. The art keys refer to `js/art/` (`npcs.js`, `monsters-*.js`): `npc(key)` is the bust portrait, `npcFigure(key)` the full body, and `monster(key)` the combat sprite.
 
 **General art direction:** anime/JRPG style, with big expressive eyes, cel shading and strong silhouettes. Female characters wear revealing fantasy outfits that are tasteful and non-explicit, and are always clearly adults. Males are heroic and often muscular. Faith colours mark allegiance: gold and white for the Dawn, silver and pale blue for the Pale Hour, brown, moss and amber for the Root.
 
@@ -20,9 +20,10 @@ Every entry lists role, faith, looks (written as an art brief), voice and where 
 - **Appears in:** the `lyra` events in sewers1, crypt1, keep1 and tower1, the ending, and the locket. Art keys: `npc('ghost_girl')` (unnamed), `npc('lyra')`.
 
 ### Irena of Isenmark (deceased)
-- **Role and faith:** Malthor's wife and Lyra's mother, a Pale Hour devotee who died about 8 years ago.
-- **Looks** (for future portraits): dark-haired, grey-eyed, in silver Isenmark dress, wearing a still-lily pin.
-- Not yet in the game.
+- **Role and faith:** Malthor's wife and Lyra's mother, a Pale Hour devotee who died about 8 years ago of the same wasting fever that later took Lyra. She raised Lyra to light a candle for the Still Mother *and* one for the Dawn.
+- **Looks:** dark hair in the same style as Lyra's, grey eyes, a warm and gentle face. A silver Isenmark gown (revealing but tasteful, clearly adult) embroidered with the Pale Hour's snowflake-and-hourglass, a **still-lily** pin at her breast and another still-lily in her hair.
+- **Voice:** tender, steady. "Tell him I was never in the ice."
+- **Appears in:** the family portrait in her house (`l1`), and as **the Echo of Irena** at the heart of the Folded Cellar (`folded2`). Art keys: `npc('irena')`, `npcFigure('irena')`, `monster('irena_echo')`. Her memory is told in the side quest *The Folded House* (side-quests.md).
 
 ### King Morvane, the Hollow King
 - **Role and faith:** the last king-priest of the Deep Root and Malthor's first teacher (as a spirit). Bound in undeath; boss of `crypt2`.
@@ -79,6 +80,7 @@ Every entry lists role, faith, looks (written as an art brief), voice and where 
 | the Sage of Review | the Review Board: levels and spells | old and scholarly, with robes and a long beard | Hall of Review (R) | `sage` |
 | Madame Zeyla | the Mystic: SP, fortunes, and giver of the Concord quest. Her faith is evasive; rumoured to be an Isenmark exile. | a sultry fortune-teller with violet silks, jewellery and a crystal ball | Mystic (M) | `mystic` |
 | Orrin the Clockmaker | a Dawn craftsman, gone "to the Dawn" (dead); his family hid the Sun Shard | (unseen; clocks everywhere) | House Q | - |
+| Malthor's household | the family townhouse (L) next to the tower; abandoned for eight years except for Malthor's study | (unseen) | House L | - |
 | Bramwick the Miller | a Root-folk miller, "took the way up to go down" | (unseen) | House U | - |
 
 ## The default party (Guild "ready-made party")

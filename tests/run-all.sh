@@ -4,9 +4,12 @@ cd "$(dirname "$0")/.." || exit 1
 fail=0
 run() { echo "== $*"; "$@" || { echo "!! FAILED: $*"; fail=1; }; }
 run node tests/test-maps.js
+run node tests/test-hex.js
+run node tests/test-combat.js
+run node tests/test-dressing.js
 run node tests/test-art.js
 run node tests/test-audio.js
-for t in smoke services side-quest gameover-ending; do run node "tests/browser/$t.js"; done
+for t in smoke battle places services side-quest gameover-ending; do run node "tests/browser/$t.js"; done
 if [ "$1" != "--quick" ]; then
   run node tests/sim.js 20
   echo "== node tests/playthrough.js 2"

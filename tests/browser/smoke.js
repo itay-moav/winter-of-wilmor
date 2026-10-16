@@ -15,15 +15,19 @@ const { open, check, finish } = require('./_common');
   await T.key('m', 500);
   check(await T.eval("document.getElementById('bigmap') !== null"), 'full map opens with M');
   await T.key('Escape', 300);
-  // pin the starting distance to 10' (U.rand -> 0 while the groups are created) so every key below is valid
+  // pin randomness while the board is set up (monster groups start 10' away, no obstacles in the way)
   await T.eval("BT.CB.delay = 40; const r = BT.U.rand; BT.U.rand = () => 0; BT.EX.guard(() => BT.CB.fight([['rat', 3], ['kobold', 2]], {})); BT.U.rand = r; 1");
   await T.sleep(600);
-  await T.key('f', 300);
-  for (let i = 0; i < 3; i++) { await T.key('a', 150); await T.key('1', 150); }
-  await T.key('s', 200); await T.key('2', 200);           // bard sings
-  await T.key('c', 200); await T.key('1', 200); await T.key('1', 200); // conjurer: Spark Bolt at group 1
-  await T.key('c', 200); await T.key('1', 200); await T.key('1', 200); // magician: Voltaic Touch
-  await T.sleep(3000);
+  check(await T.eval("!!document.querySelector('#battle .bhex') && document.querySelectorAll('#battle .btok.ally').length === 6"), 'the battle opens on a hex board with the whole party on it');
+  // each hero: the bard sings, mages cast at the first foe, everyone else attacks or defends
+  for (let i = 0; i < 30 && await T.eval('BT.CB.active()'); i++) {
+    const m = await T.menu();
+    if (/Sing/.test(m) && !(await T.eval('BT.CB.songId()'))) { await T.key('s', 200); await T.key('2', 300); }
+    else if (/Cast spell/.test(m)) { await T.key('c', 200); await T.key('1', 200); await T.key('1', 300); }
+    else if (/Attack/.test(m) && !/no foe in reach/.test(m)) { await T.key('a', 200); await T.key('1', 300); }
+    else if (/Defend/.test(m)) await T.key('p', 300);
+    else await T.sleep(300);
+  }
   const log = await T.eval("document.getElementById('log').innerText");
   if (!(/casts/.test(log) && /plays the/.test(log))) console.log(log.slice(-800));
   check(/casts/.test(log) && /plays the/.test(log), 'spells and a song resolve in combat');

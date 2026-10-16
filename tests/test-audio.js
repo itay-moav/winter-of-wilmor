@@ -1,12 +1,14 @@
 #!/usr/bin/env node
-// Loads js/audio.js in a Node vm with a minimal fake window (no AudioContext) and checks
+// Loads the js/audio/ package in a Node vm with a minimal fake window (no AudioContext) and checks
 // that every API call is a safe no-op and that all required track / sfx names exist.
 'use strict';
 var fs = require('fs');
 var path = require('path');
 var vm = require('vm');
 
-var src = fs.readFileSync(path.join(__dirname, '..', 'js', 'audio.js'), 'utf8');
+// the audio package, in index.html load order
+var FILES = ['core', 'notation', 'instruments', 'tracks-ambient', 'tracks-battle', 'tracks-songs', 'sfx', 'player']
+  .map(function (f) { return path.join('js', 'audio', f + '.js'); });
 var store = {};
 var win = {
   localStorage: {
@@ -17,7 +19,9 @@ var win = {
 };
 win.window = win;
 var ctx = vm.createContext(win);
-vm.runInContext(src, ctx, { filename: 'audio.js' });
+FILES.forEach(function (f) {
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f });
+});
 
 var fails = 0;
 function ok(cond, msg) { if (!cond) { fails++; console.error('FAIL: ' + msg); } else console.log('ok   ' + msg); }
@@ -57,6 +61,27 @@ ok(A.isMuted() === !m0, 'isMuted toggles');
 A.toggleMute();
 var saved = JSON.parse(store.bt_audio || '{}');
 ok(saved.music === 0.4 && saved.sfx === 0.5, 'settings persisted in localStorage bt_audio');
+
+// bard songs: separate list, safe no-ops without Web Audio, remembered before init
+var SONGS = ['ward', 'march', 'hearth', 'lantern', 'lull', 'requiem', 'swift'];
+ok(typeof A.song === 'function' && typeof A.currentSong === 'function', 'has song() and currentSong()');
+ok(Array.isArray(A.songTracks) && A.songTracks.length === 7, 'songTracks lists 7 tracks');
+SONGS.forEach(function (id) {
+  ok(A.songTracks.indexOf('song_' + id) >= 0, 'songTracks has song_' + id);
+  ok(A.musicTracks.indexOf('song_' + id) < 0, 'musicTracks does not list song_' + id + ' (combat picks battle themes from it)');
+  var L = A._loopSeconds('song_' + id);
+  ok(L && L.loop >= 30 && L.loop <= 70, 'song_' + id + ' loop is 30-70 s (' + (L && L.loop.toFixed(1)) + ' s)');
+});
+ok(A.currentSong() === null, 'no song by default');
+safe('song() calls without Web Audio', function () { SONGS.forEach(function (id) { A.song(id); A.song(id); }); });
+ok(A.currentSong() === 'swift', 'currentSong remembers the last requested song (got ' + A.currentSong() + ')');
+safe('unknown song id ignored', function () { A.song('nope'); A.song(42); A.song('song_ward'); });
+ok(A.currentSong() === 'swift', 'unknown ids leave the song unchanged');
+safe('music() while a song is set', function () { A.music('combat_city'); A.music('town'); });
+ok(A.currentSong() === 'swift', 'music() does not touch the song');
+safe('song(null) / song()', function () { A.song(null); A.song('lull'); A.song(); });
+ok(A.currentSong() === null, 'song() with no id stops the song');
+ok(A._renderDuck('town', 'song_ward', 5, 1, 3) === null, '_renderDuck is null without OfflineAudioContext');
 
 // track data sanity: every melody must exactly span its section
 var info = A._trackInfo();

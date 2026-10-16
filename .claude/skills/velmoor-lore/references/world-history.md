@@ -22,9 +22,10 @@ Years are counted relative to the game's present (Y0).
 | Y-300 to Y-1 | An uneasy coexistence. The Dawn is the state faith. The Root survives in the Lower Ward. Isenmark keeps an embassy-temple. **King Morvane**'s line is honoured privately by the Root-folk. |
 | ~Y-40 | Young **Malthor** studies magic under the ghost of King Morvane (a Root scholar-spirit in the crypt), and later at the court. He becomes court archmage. |
 | ~Y-20 | Malthor marries **Irena of Isenmark**, a Pale Hour devotee. **Lyra** is born and raised in the Dawn, while her mother takes her to light candles at the Pale Hall. |
-| ~Y-8 | Irena dies. Malthor withdraws into grief and work. |
+| ~Y-8 | Irena dies of a wasting fever (the same one that later takes Lyra). Malthor carries her things down to the cellar of the family townhouse "where nothing will change", keeps Lyra's room exactly as it was, and withdraws into grief and work. |
 | Y-1 | Lyra falls ill with a wasting fever. **High Priestess Aurelle** counsels acceptance. Malthor turns to **Matron Sevrine**, who teaches him the **Rite of Stillness**. |
 | Y-1 | **The Freezing:** Malthor stills Lyra's last moment in crystal. The rite spreads into the endless winter. He binds three guardians to keep his keys: the Rat King (who leads the sewer thieves), King Morvane (bound in undeath, the Root's worst sacrilege) and Kargath (a Dawn knight, cursed). |
+| Y-1 | **The Fold:** the stillness of the Rite pools where Malthor's grief is oldest, under his own house. The cellar stair stops ending: it folds into a pocket of endless, repeating cellar (the Folded Cellar), where an echo of Irena keeps her memory unchanged. |
 | Y0 | **The game begins.** The faiths are in open quarrel, Pale Hour zealots celebrate in the streets, the dead walk, and the Guild calls for heroes. |
 | Y0 + days | Malthor is defeated and Lyra is released. Spring returns. Three days later the three faiths pray together at the Heartwood Oak in the graveyard. |
 
